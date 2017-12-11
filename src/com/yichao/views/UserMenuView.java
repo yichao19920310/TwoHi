@@ -64,6 +64,9 @@ public class UserMenuView extends View {
 			}
 		}else if(command.length() == 1 && index1 == -1) {
 			command1 = command;
+		}else {
+			System.out.println("÷∏¡Ó”–ŒÛ!");
+			return mView = new UserMenuView();
 		}
 		switch(command1) {
 		case EXIT:

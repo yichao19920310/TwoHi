@@ -2,6 +2,7 @@ package com.yichao.bizImpl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import com.yichao.bean.Admin;
 import com.yichao.bean.Car;
@@ -89,7 +90,30 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 
 	@Override
 	public void sortCar(int sortType) {
-		// TODO Auto-generated method stub
+		mCarList.sort(new Comparator<Car>() {
+
+			@Override
+			public int compare(Car o1, Car o2) {
+				if(o1.getCarLendPrice()<o2.getCarLendPrice()) {
+					return (sortType==1)?1:-1;
+				}else if(o1.getCarLendPrice()==o2.getCarLendPrice()) {
+					return 0;
+				}else {
+					return (sortType==1)?-1:1;
+				}
+				
+			}
+			
+		});
+		System.out.println("=====================================================");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约\t是否上架");
+		for (Car car : mCarList) {				
+			System.out.println(""+car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
+					+car.getCarBrand()+"("+car.getCarBrandId()+")\t"+car.getCarType()+"("+car.getCarTypeId()
+					+")\t"+car.getCarLendPrice()+"/天\t"+((LENDABLE == car.getCarLendStatus())?"是":"否")
+					+"\t"+((ORDERABLE == car.getCarOrderStatus())?"是":"否")+"\t"
+					+((ONLINE_CAR == car.getCarStatus())?"是":"否"));			
+		}
 		
 	}
 
