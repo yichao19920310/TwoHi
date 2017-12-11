@@ -35,7 +35,7 @@ public class UserMenuView extends View {
 	 */
 	@Override
 	public View showView() {
-		ub.showAllCar(1);		
+		ub.showAllCar();		
 		showMenu();
 		String command = iT.getString();
 		String command1 = "";
@@ -47,9 +47,21 @@ public class UserMenuView extends View {
 			command1 = command.substring(0,index1);
 			command2 = command.substring(index1+1, index2);
 			command3 = command.substring(index2+1);
+			if(iT.isInt(command2) && iT.isInt(command3)) {
+				
+			}else {
+				System.out.println("指令有误!");
+				return mView = new UserMenuView();
+			}
 		}else if(command.length() > 2 && index1 == 1 && index2 == 1) {
 			command1 = command.substring(0,index1);
 			command2 = command.substring(index1+1);
+			if(iT.isInt(command2)) {
+				
+			}else {
+				System.out.println("指令有误!");
+				return mView = new UserMenuView();
+			}
 		}else if(command.length() == 1 && index1 == -1) {
 			command1 = command;
 		}
@@ -58,14 +70,22 @@ public class UserMenuView extends View {
 			mView = null;
 			System.out.println("再见!");
 			break;
-		case LEND_CAR:
+		case LEND_CAR:			
 			int carId = Integer.parseInt(command2);
-			int lendDays = Integer.parseInt(command3);
-			boolean isSuccess = ub.lendCar(carId, lendDays);
+			int lendDays = Integer.parseInt(command3);			
+			if(ub.lendCar(carId, lendDays)) {
+				System.out.println("租车成功!信息如下:");
+			}else {
+				System.out.println("租车失败!");
+			}
+			mView = new UserMenuView();					
 			break;
 		case ORDER_CAR:
 			break;
 		case SORT:
+			int sortType = Integer.parseInt(command2);
+			ub.sortCar(sortType);
+			mView = new UserMenuView();
 			break;
 		case SEARCH_BY_BRAND:
 			break;
@@ -97,7 +117,7 @@ public class UserMenuView extends View {
 		System.out.println("输入0:退出");
 		System.out.println("输入1+汽车编号+租借天数:租车");
 		System.out.println("输入2+汽车编号:预约车");
-		System.out.println("输入3+1:价格降序排列;2+2:价格升序排列");		
+		System.out.println("输入3+1:价格降序排列;3+2:价格升序排列");		
 		System.out.println("输入4+品牌编号:按品牌搜索");
 		System.out.println("输入5+类型编号:按类型搜索");
 		System.out.println("输入6:查看全部汽车");

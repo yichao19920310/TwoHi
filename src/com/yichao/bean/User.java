@@ -11,8 +11,6 @@ public class User implements Serializable{
 	private int userId;
 	private String userName;
 	private String userPwd;
-	//1:普通用户 0:管理员
-	private int userStatus;
 	public int getUserId() {
 		return userId;
 	}
@@ -30,13 +28,7 @@ public class User implements Serializable{
 	}
 	public void setUserPwd(String userPwd) {
 		this.userPwd = userPwd;
-	}
-	public int getUserStatus() {
-		return userStatus;
-	}
-	public void setUserStatus(int userStatus) {
-		this.userStatus = userStatus;
-	}
+	}	
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

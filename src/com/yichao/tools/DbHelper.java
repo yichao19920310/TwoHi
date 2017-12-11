@@ -32,7 +32,7 @@ public class DbHelper {
 			
 			try {
 				Properties p = new Properties();
-				File f = new File("config/config.properties");
+				File f = new File("configs/config.properties");
 				InputStream is = new FileInputStream(f);
 				p.load(is);
 				String driver =p.getProperty("DRIVER");

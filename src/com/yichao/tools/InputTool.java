@@ -1,6 +1,8 @@
 package com.yichao.tools;
 
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class InputTool {
 
@@ -18,6 +20,26 @@ public class InputTool {
 		return instance;
 	}
 	
+	public boolean isInt(String str) {
+
+		if (str != null && !"".equals(str.trim())) {
+			Pattern pattern = Pattern.compile("[0-9]*");
+			Matcher isNum = pattern.matcher(str);
+			Long number = 0l;
+			if (isNum.matches()) {
+				number = Long.parseLong(str);
+			} else {
+				return false;
+			}
+			if (number > 2147483647) {
+				return false;
+			}
+		} else {
+			return false;
+		}
+		return true;
+
+	}
 	public int getInt() {
 		int i = 0;
 		while(true) {

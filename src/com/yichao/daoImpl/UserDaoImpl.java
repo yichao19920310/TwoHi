@@ -11,10 +11,13 @@ import com.yichao.bean.Car;
 import com.yichao.bean.LendRecord;
 import com.yichao.bean.OrderRecord;
 import com.yichao.bean.User;
+import com.yichao.dao.CarDao;
+import com.yichao.dao.LendRecordDao;
+import com.yichao.dao.OrderRecordDao;
 import com.yichao.dao.UserDao;
 import com.yichao.tools.DbHelper;
 
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao {
 
 	private Connection mConnection;
 	private PreparedStatement mStatement;
@@ -34,33 +37,28 @@ public class UserDaoImpl implements UserDao {
 	 * @see com.yichao.dao.UserDao#getUserByName(java.lang.String)  
 	 */  
 	@Override
-	public User getUserByName(String userName) {
+	public User getUserByName(String userName) throws SQLException {
 		String sql = "select * from UserList where userName = ?";
 		User u = new User();	
 		//--通过连接获取PreparedStatement对象
-		try {
-			mStatement = mConnection.prepareStatement(sql);
-			mStatement.setString(1, userName);
-			rSet = mStatement.executeQuery();
+		
+		mStatement = mConnection.prepareStatement(sql);
+		mStatement.setString(1, userName);
+		rSet = mStatement.executeQuery();
 			
-			if (rSet.next()) {
-				u = new User();				
-				u.setUserId(rSet.getInt("USERID"));	
-				u.setUserName(rSet.getString("USERNAME"));
-				u.setUserPwd(rSet.getString("USERPWD"));			
-				u.setUserStatus(rSet.getInt("USERSTATUS"));
-			}else {
-				u = null;
-			}
-		} catch (SQLException e) {
-			
-			e.printStackTrace();
+		if (rSet.next()) {
+			u = new User();				
+			u.setUserId(rSet.getInt("USERID"));	
+			u.setUserName(rSet.getString("USERNAME"));
+			u.setUserPwd(rSet.getString("USERPWD"));							
+		}else {
+			u = null;
 		}
 		
 		
 		
 			
-		return u;		
+		return u;	
 	}
 
 	/* (非 Javadoc)  
@@ -73,7 +71,7 @@ public class UserDaoImpl implements UserDao {
 	 */  
 	@Override
 	public boolean insertUser(String userName, String userPwd) {
-		String sql = "insert into userlist values (userid_seq.nextval,?,?,default)";		
+		String sql = "insert into userlist values (userid_seq.nextval,?,?)";		
 		try {
 			mStatement = mConnection.prepareStatement(sql);
 			mStatement.setString(1, userName);
@@ -97,32 +95,29 @@ public class UserDaoImpl implements UserDao {
 	 * @see com.yichao.dao.UserDao#getCarList()  
 	 */  
 	@Override
-	public ArrayList<Car> getCarList() {
-		String sql = "select * from carlist";
+	public ArrayList<Car> getCarList() throws SQLException {
+		String sql = "select * from carlist where carstatus = 1";
 		ArrayList<Car> carList = new ArrayList<>();
-		try {
-			mStatement = mConnection.prepareStatement(sql);
-			rSet = mStatement.executeQuery();
-			while(rSet.next()) {
-				Car car = new Car();
-				car.setCarId(rSet.getInt("CARID"));
-				car.setCarName(rSet.getString("CARNAME"));
-				car.setCarBrand(rSet.getString("CARBRAND"));
-				car.setCarBrandId(rSet.getInt("CARBRANDID"));
-				car.setCarType(rSet.getString("CARTYPE"));
-				car.setCarTypeId(rSet.getInt("CARTYPEID"));
-				car.setCarRemark(rSet.getString("CARREMARK"));
-				car.setCarPrice(rSet.getDouble("CARPRICE"));
-				car.setCarLendPrice(rSet.getDouble("CARLENDPRICE"));
-				car.setCarStatus(rSet.getInt("CARSTATUS"));
-				car.setCarLendStatus(rSet.getInt("CARLENDSTATUS"));
-				car.setCarOrderStatus(rSet.getInt("CARORDERSTATUS"));
-				carList.add(car);
+		
+		mStatement = mConnection.prepareStatement(sql);
+		rSet = mStatement.executeQuery();
+		while(rSet.next()) {
+			Car car = new Car();
+			car.setCarId(rSet.getInt("CARID"));
+			car.setCarName(rSet.getString("CARNAME"));
+			car.setCarBrand(rSet.getString("CARBRAND"));
+			car.setCarBrandId(rSet.getInt("CARBRANDID"));
+			car.setCarType(rSet.getString("CARTYPE"));
+			car.setCarTypeId(rSet.getInt("CARTYPEID"));
+			car.setCarRemark(rSet.getString("CARREMARK"));
+			car.setCarPrice(rSet.getDouble("CARPRICE"));
+			car.setCarLendPrice(rSet.getDouble("CARLENDPRICE"));
+			car.setCarStatus(rSet.getInt("CARSTATUS"));
+			car.setCarLendStatus(rSet.getInt("CARLENDSTATUS"));
+			car.setCarOrderStatus(rSet.getInt("CARORDERSTATUS"));
+			carList.add(car);
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		
 		
 		return carList;
@@ -194,46 +189,7 @@ public class UserDaoImpl implements UserDao {
 		return false;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: insertCar</p>  
-	 * <p>Description: </p>  
-	 * @param car
-	 * @return  
-	 * @see com.yichao.dao.UserDao#insertCar(com.yichao.bean.Car)  
-	 */  
-	@Override
-	public boolean insertCar(Car car) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/* (非 Javadoc)  
-	 * <p>Title: updateLendPrice</p>  
-	 * <p>Description: </p>  
-	 * @param carId
-	 * @param lendprice
-	 * @return  
-	 * @see com.yichao.dao.UserDao#updateLendPrice(int, double)  
-	 */  
-	@Override
-	public boolean updateLendPrice(int carId, double lendprice) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/* (非 Javadoc)  
-	 * <p>Title: updateCarStatus</p>  
-	 * <p>Description: </p>  
-	 * @param carId
-	 * @param carStatus
-	 * @return  
-	 * @see com.yichao.dao.UserDao#updateCarStatus(int, int)  
-	 */  
-	@Override
-	public boolean updateCarStatus(int carId, int carStatus) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 	/* (非 Javadoc)  
 	 * <p>Title: getLrList</p>  
@@ -319,7 +275,8 @@ public class UserDaoImpl implements UserDao {
 	 * @see com.yichao.dao.UserDao#lendCarByOrder(int, int, int)  
 	 */  
 	@Override
-	public void lendCarByOrder(int carId, int lendDays, int orId) {
+	public boolean lendCarByOrder(int carId, int lendDays, int orId) {
+		return false;
 		// TODO Auto-generated method stub
 		
 	}
