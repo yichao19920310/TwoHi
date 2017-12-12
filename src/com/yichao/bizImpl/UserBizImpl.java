@@ -145,13 +145,20 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	}
 	@Override
 	public void showOrderRecordByUser(int userId) {
+		logInfo("查看自己预约记录");
 		try {
-			ud.getOrListByUser(userId);
+			mOrderRecordList = ud.getOrListByUser(userId);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			logError(e,"通过用户从数据库获取预约记录集合");
 			e.printStackTrace();
 		}
-		
+		System.out.println("=================================================================================");
+		System.out.println("编号\t汽车编号\t汽车名称\t预期借车时间\t实际借车时间\t尚未借车");
+		for (OrderRecord or : mOrderRecordList) {
+			System.out.println(or.getOrId()+"\t"+or.getCarId()+"\t"+or.getCarName()+"\t"
+					+or.getExpLendDate()+"\t"+or.getActLendDate()+"\t"
+					+((ORDER_ACT == or.getOrStatus())?"是":"否"));
+		}
 	}
 	@Override
 	public void showOrderRecordByCar(int carId) {

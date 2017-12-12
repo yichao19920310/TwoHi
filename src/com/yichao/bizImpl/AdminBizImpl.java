@@ -157,7 +157,23 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 
 	@Override
 	public void showCarByName(String carName) {
-		// TODO Auto-generated method stub
+		logInfo("通过汽车名称查找汽车");
+		ArrayList<Car> carList = new ArrayList<>();
+		try {
+			carList = ad.getCarByName(carName);
+		} catch (SQLException e) {
+			logError(e,"通过汽车名称从数据库获取汽车列表");
+			e.printStackTrace();
+		}
+		System.out.println("=================================================================================");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约\t是否上架");
+		for (Car car : carList) {
+			System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
+					+car.getCarBrand()+"("+car.getCarBrandId()+")\t"+car.getCarType()+"("+car.getCarTypeId()
+					+")\t"+car.getCarLendPrice()+"/天\t"+((LENDABLE == car.getCarLendStatus())?"是":"否")
+					+"\t"+((ORDERABLE == car.getCarOrderStatus())?"是":"否")+"\t"
+					+((ONLINE_CAR == car.getCarStatus())?"是":"否"));
+		}
 		
 	}
 
@@ -169,7 +185,7 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 			try {
 				a = ad.getAdminByName(adminName);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 				logError(e,"从数据库通过管理员用户名获取管理员");
 			}
