@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
 import com.yichao.bean.Car;
 import com.yichao.bean.LendRecord;
 import com.yichao.bean.OrderRecord;
@@ -32,6 +34,10 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	final int UN_ORDERABLE = 0;
 	final int ORDER_ACT = 1;
 	final int ORDER_FIN = 0;
+	final int LEND_ACT = 1;
+	final int LEND_FIN = 0;
+	final int SEARCH_BRAND = 1;
+	final int SEARCH_TYPE = 2;
 	@Override
 	public boolean userLogin(String userName, String userPwd) {
 		
@@ -41,14 +47,18 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logError(e,"登录从数据库通过用户名调取用户");
 		}
 		if(u == null) {
+			logInfo("用户名不存在,登录失败");
 			return false;
 		}
 		if(userPwd.equals(u.getUserPwd())) {
 			mUser = u;
+			logInfo("登录成功");
 			return true;
 		}
+		logInfo("密码不匹配,登陆失败");
 		return false;
 	}
 	@Override
@@ -62,23 +72,32 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logError(e,"注册从数据库通过用户名获取用户");
 		}
 		if(m1.matches() && m2.matches() && u == null) {
-			boolean isSuccess = ud.insertUser(userName, userPwd);
+			boolean isSuccess = false;
+			try {
+				isSuccess = ud.insertUser(userName, userPwd);
+			} catch (SQLException e) {
+				logError(e,"插入用户进数据库");
+				e.printStackTrace();
+			}
+			
 			return isSuccess;			
-		}
-		
+		}		
 		return false;
 	}
 	
 	
 	@Override
 	public void showAllCar() {
+		logInfo("查看所有汽车");
 		try {
 			mCarList = ud.getCarList();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			logError(e,"从数据库获取所有汽车");
 			e.printStackTrace();
+			
 		}
 		
 		System.out.println("=================================================================================");
@@ -95,7 +114,12 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	
 	@Override
 	public boolean lendCar(int carId, int lendDays) {
-		mOrderRecordList = ud.getOrListByUser(mUser.getUserId());
+		try {
+			mOrderRecordList = ud.getOrListByUser(mUser.getUserId());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		boolean isSuccess = false;
 		for (Car car : mCarList) {
 			if(carId == car.getCarId() && 
@@ -121,7 +145,12 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	}
 	@Override
 	public void showOrderRecordByUser(int userId) {
-		// TODO Auto-generated method stub
+		try {
+			ud.getOrListByUser(userId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	@Override
@@ -136,7 +165,20 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	}
 	@Override
 	public void showLendRecordByUser(int userId) {
-		// TODO Auto-generated method stub
+		logInfo("查看自己的借出记录");
+		try {
+			mLendRecordList = ud.getLrListByUser(userId);
+		} catch (SQLException e) {
+			logError(e,"通过用户从数据库获取借出记录集合");
+			e.printStackTrace();
+		}
+		System.out.println("=================================================================================");
+		System.out.println("编号\t汽车编号\t汽车名称\t租金总额\t借车时间\t最后还车期限\t实际还车时间\t尚未还车");
+		for (LendRecord lr : mLendRecordList) {
+			System.out.println(lr.getLrId()+"\t"+lr.getCarId()+"\t"+lr.getCarName()+"\t"
+					+lr.getTotalFee()+"\t"+lr.getLendDate()+"\t"+lr.getExpRetuDate()+"\t"
+					+lr.getActRetuDate()+"\t"+((LEND_ACT == lr.getLrStatus())?"是":"否"));
+		}
 		
 	}
 	@Override
@@ -146,11 +188,36 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	}
 	@Override
 	public void showAllCar(int searchType, int searchId) {
-		// TODO Auto-generated method stub
+		if(SEARCH_BRAND == searchType) {
+			logInfo("按品牌查车");
+			System.out.println("=================================================================================");
+			System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约");
+			for (Car car : mCarList) {
+				if(car.getCarBrandId()==searchId) {
+					System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
+							+car.getCarBrand()+"("+car.getCarBrandId()+")\t"+car.getCarType()+"("+car.getCarTypeId()
+							+")\t"+car.getCarLendPrice()+"/天\t"+((LENDABLE == car.getCarLendStatus())?"是":"否")
+							+"\t"+((ORDERABLE == car.getCarOrderStatus())?"是":"否"));
+				}
+			}
+		}else if(SEARCH_TYPE == searchType) {
+			logInfo("按类型查车");
+			System.out.println("=================================================================================");
+			System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约");
+			for (Car car : mCarList) {
+				if(car.getCarTypeId()==searchId) {
+					System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
+							+car.getCarBrand()+"("+car.getCarBrandId()+")\t"+car.getCarType()+"("+car.getCarTypeId()
+							+")\t"+car.getCarLendPrice()+"/天\t"+((LENDABLE == car.getCarLendStatus())?"是":"否")
+							+"\t"+((ORDERABLE == car.getCarOrderStatus())?"是":"否"));
+				}
+			}
+		}
 		
 	}
 	@Override
 	public void sortCar(int sortType) {
+		logInfo("排序汽车");
 		mCarList.sort(new Comparator<Car>() {
 
 			@Override
@@ -183,8 +250,22 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	}
 	@Override
 	public void showCarByName(String carName) {
-		// TODO Auto-generated method stub
-		
+		logInfo("通过汽车名称查找汽车");
+		ArrayList<Car> carList = new ArrayList<>();
+		try {
+			carList = ud.getCarByName(carName);
+		} catch (SQLException e) {
+			logError(e,"通过汽车名称从数据库获取汽车列表");
+			e.printStackTrace();
+		}
+		System.out.println("=================================================================================");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约");
+		for (Car car : carList) {
+			System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
+					+car.getCarBrand()+"("+car.getCarBrandId()+")\t"+car.getCarType()+"("+car.getCarTypeId()
+					+")\t"+car.getCarLendPrice()+"/天\t"+((LENDABLE == car.getCarLendStatus())?"是":"否")
+					+"\t"+((ORDERABLE == car.getCarOrderStatus())?"是":"否"));
+		}
 	}	
 	@Override
 	public boolean returnCar(int carId) {
@@ -200,6 +281,25 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	public boolean lendOrderCar(int carId) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	@Override
+	public void logError(Throwable e,String info) {
+		Logger logger = Logger.getLogger("UserErrorLog");
+		if(mUser != null) {
+			logger.error("用户:"+mUser.getUserName()+info+"时出错,错误信息为:"+e.getMessage());
+		}else {
+			logger.error(info+"时出错:"+e.getMessage());
+		}
+		
+	}
+	@Override
+	public void logInfo(String info) {
+		Logger logger = Logger.getLogger("UserInfoLog");
+		if(mUser != null) {
+			logger.info("用户:"+mUser.getUserName()+info);
+		}else {
+			logger.info("用户"+info);
+		}
 	}
 	
 	

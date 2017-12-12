@@ -33,9 +33,10 @@ public class UserRegistView extends View {
 		boolean isSuccess = ub.userRegist(userName, userPwd);
 		if(isSuccess) {
 			System.out.println("×¢²á³É¹¦!");
-			
+			ub.logInfo("×¢²á³É¹¦");
 		}else {
 			System.out.println("×¢²áÊ§°Ü!");
+			ub.logInfo("×¢²áÊ§°Ü");
 		}
 		mView = new MainView();
 		return mView;

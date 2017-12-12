@@ -70,17 +70,14 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @see com.yichao.dao.UserDao#insertUser(java.lang.String, java.lang.String)  
 	 */  
 	@Override
-	public boolean insertUser(String userName, String userPwd) {
+	public boolean insertUser(String userName, String userPwd) throws SQLException {
 		String sql = "insert into userlist values (userid_seq.nextval,?,?)";		
-		try {
+		
 			mStatement = mConnection.prepareStatement(sql);
 			mStatement.setString(1, userName);
 			mStatement.setString(2, userPwd);
 			rNum = mStatement.executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		if(rNum > 0) {
 			return true;
 		}
@@ -131,9 +128,31 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @see com.yichao.dao.UserDao#getCarById(int)  
 	 */  
 	@Override
-	public Car getCarById(int carId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Car> getCarById(int carId) throws SQLException {
+		String sql = "select * from carlist where carid = ? and carstatus = 1";
+		ArrayList<Car> carList = new ArrayList<>();		
+		mStatement = mConnection.prepareStatement(sql);
+		mStatement.setInt(1, carId);
+		rSet = mStatement.executeQuery();
+		while(rSet.next()) {
+			Car car = new Car();
+			car.setCarId(rSet.getInt("CARID"));
+			car.setCarName(rSet.getString("CARNAME"));
+			car.setCarBrand(rSet.getString("CARBRAND"));
+			car.setCarBrandId(rSet.getInt("CARBRANDID"));
+			car.setCarType(rSet.getString("CARTYPE"));
+			car.setCarTypeId(rSet.getInt("CARTYPEID"));
+			car.setCarRemark(rSet.getString("CARREMARK"));
+			car.setCarPrice(rSet.getDouble("CARPRICE"));
+			car.setCarLendPrice(rSet.getDouble("CARLENDPRICE"));
+			car.setCarStatus(rSet.getInt("CARSTATUS"));
+			car.setCarLendStatus(rSet.getInt("CARLENDSTATUS"));
+			car.setCarOrderStatus(rSet.getInt("CARORDERSTATUS"));
+			carList.add(car);
+		}
+		
+		
+		return carList;
 	}
 
 	/* (非 Javadoc)  
@@ -144,9 +163,31 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @see com.yichao.dao.UserDao#getCarByName(java.lang.String)  
 	 */  
 	@Override
-	public ArrayList<Car> getCarByName(String carName) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Car> getCarByName(String carName) throws SQLException {
+		String sql = "select * from carlist where carname like '%'||?||'%' and carstatus = 1";
+		ArrayList<Car> carList = new ArrayList<>();		
+		mStatement = mConnection.prepareStatement(sql);
+		mStatement.setString(1, carName);
+		rSet = mStatement.executeQuery();
+		while(rSet.next()) {
+			Car car = new Car();
+			car.setCarId(rSet.getInt("CARID"));
+			car.setCarName(rSet.getString("CARNAME"));
+			car.setCarBrand(rSet.getString("CARBRAND"));
+			car.setCarBrandId(rSet.getInt("CARBRANDID"));
+			car.setCarType(rSet.getString("CARTYPE"));
+			car.setCarTypeId(rSet.getInt("CARTYPEID"));
+			car.setCarRemark(rSet.getString("CARREMARK"));
+			car.setCarPrice(rSet.getDouble("CARPRICE"));
+			car.setCarLendPrice(rSet.getDouble("CARLENDPRICE"));
+			car.setCarStatus(rSet.getInt("CARSTATUS"));
+			car.setCarLendStatus(rSet.getInt("CARLENDSTATUS"));
+			car.setCarOrderStatus(rSet.getInt("CARORDERSTATUS"));
+			carList.add(car);
+		}
+		
+		
+		return carList;
 	}
 
 	/* (非 Javadoc)  
@@ -223,9 +264,32 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @see com.yichao.dao.UserDao#getLrListByUser(int)  
 	 */  
 	@Override
-	public ArrayList<LendRecord> getLrListByUser(int userId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<LendRecord> getLrListByUser(int userId) throws SQLException {
+		String sql = "select * from lendrecordlist where userid = ?";
+		mStatement = mConnection.prepareStatement(sql);
+		mStatement.setInt(1, userId);
+		rSet = mStatement.executeQuery();
+		ArrayList<LendRecord> lrList = new ArrayList<>();
+		while(rSet.next()) {
+			LendRecord lr = new LendRecord();
+			lr.setLrId(rSet.getInt("LRID"));
+			lr.setLrNumber(rSet.getString("LRNUMBER"));
+			lr.setCarId(rSet.getInt("CARID"));
+			lr.setCarName(rSet.getString("CARNAME"));
+			lr.setUserId(rSet.getInt("USERID"));
+			lr.setUserName(rSet.getString("USERNAME"));
+			lr.setLendDate(rSet.getDate("LENDDATE"));
+			lr.setExpRetuDate(rSet.getDate("EXPRETUDATE"));
+			lr.setActRetuDate(rSet.getDate("ACTRETUDATE"));
+			lr.setCarLendPrice(rSet.getDouble("CARLENDPRICE"));
+			lr.setLateFee(rSet.getDouble("LATEFEE"));
+			lr.setTotalFee(rSet.getDouble("TOTALFEE"));
+			lr.setLrStatus(rSet.getInt("LRSTATUS"));
+			
+			lrList.add(lr);			
+		}
+		
+		return lrList;
 	}
 
 	/* (非 Javadoc)  
@@ -236,9 +300,27 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @see com.yichao.dao.UserDao#getOrListByUser(int)  
 	 */  
 	@Override
-	public ArrayList<OrderRecord> getOrListByUser(int userId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<OrderRecord> getOrListByUser(int userId) throws SQLException {
+		String sql = "select * from orderrecordlist where userid = ?";
+		mStatement = mConnection.prepareStatement(sql);
+		mStatement.setInt(1, userId);
+		rSet = mStatement.executeQuery();
+		ArrayList<OrderRecord> orList = new ArrayList<>();
+		while(rSet.next()) {
+			OrderRecord or = new OrderRecord();
+			or.setOrId(rSet.getInt("ORID"));
+			or.setOrNumber(rSet.getString("ORNUMBER"));
+			or.setCarId(rSet.getInt("CARID"));
+			or.setCarName(rSet.getString("CARNAME"));
+			or.setUserId(rSet.getInt("USERID"));
+			or.setUserName(rSet.getString("USERNAME"));
+			or.setExpLendDate(rSet.getDate("EXPLENDDATE"));
+			or.setActLendDate(rSet.getDate("ACTLENDDATE"));
+			or.setOrStatus(rSet.getInt("ORSTATUS"));
+			orList.add(or);			
+		}
+		
+		return orList;
 	}
 
 	/* (非 Javadoc)  

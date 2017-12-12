@@ -39,6 +39,7 @@ public class AdminMenuView extends View {
 		switch(command1) {
 		case EXIT:
 			mView = null;
+			ab.logInfo("ÍË³öµÇÂ¼");
 			System.out.println("ÔÙ¼û!");
 			break;
 		case SEARCH_BY_ID:			

@@ -23,7 +23,7 @@ public class UserMenuView extends View {
 	final String SORT = "3";
 	final String SEARCH_BY_BRAND = "4";
 	final String SEARCH_BY_TYPE = "5";
-	final String SHOW_ALL_CARS = "6";
+	final String SEARCH_BY_NAME = "6";
 	final String SHOW_MY_LRLIST = "7";
 	final String SHOW_MY_ORLIST = "8";
 	final String RETURN_CAR = "9";
@@ -71,6 +71,7 @@ public class UserMenuView extends View {
 		switch(command1) {
 		case EXIT:
 			mView = null;
+			ub.logInfo("退出登录");
 			System.out.println("再见!");
 			break;
 		case LEND_CAR:			
@@ -91,14 +92,23 @@ public class UserMenuView extends View {
 			mView = new UserMenuView();
 			break;
 		case SEARCH_BY_BRAND:
+			int carBrandId = Integer.parseInt(command2);
+			ub.showAllCar(1, carBrandId);
+			mView = new UserMenuView();
 			break;
 		case SEARCH_BY_TYPE:
+			int carTypeId = Integer.parseInt(command2);
+			ub.showAllCar(2,carTypeId);
+			mView = new UserMenuView();
 			break;
-		case SHOW_ALL_CARS:
+		case SEARCH_BY_NAME:
+			mView = new SearchCarByNameView();
 			break;
 		case SHOW_MY_LRLIST:
+			mView = new MyLrListView();
 			break;
 		case SHOW_MY_ORLIST:
+			mView = new MyOrListView();
 			break;
 		case RETURN_CAR:
 			break;
@@ -123,7 +133,7 @@ public class UserMenuView extends View {
 		System.out.println("输入3+1:价格降序排列;3+2:价格升序排列");		
 		System.out.println("输入4+品牌编号:按品牌搜索");
 		System.out.println("输入5+类型编号:按类型搜索");
-		System.out.println("输入6:查看全部汽车");
+		System.out.println("输入6:按名称查找汽车");
 		System.out.println("输入7:查看我的租借记录");
 		System.out.println("输入8:查看我的预约记录");
 		System.out.println("输入9+汽车编号:还车");		

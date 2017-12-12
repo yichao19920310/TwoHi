@@ -1,6 +1,8 @@
 package com.yichao.biz;
 
-public interface UserBiz {
+import com.yichao.log4j.Log4j;
+
+public interface UserBiz extends Log4j{
 	public abstract boolean userLogin(String userName, String userPwd);
 	public abstract boolean userRegist(String userName, String userPwd);
 	
