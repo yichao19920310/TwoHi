@@ -2,16 +2,16 @@ package com.yichao.views;
 
 public class AdminMenuView extends View {
 
-	final String EXIT = "0";
-	final String SEARCH_BY_ID = "1";
-	final String SORT = "2";	
-	final String SEARCH_BY_BRAND = "3";
-	final String SEARCH_BY_TYPE = "4";
-	final String SEARCH_BY_NAME = "5";
-	final String ADD_CAR = "6";
-	final String UPDATE_CAR = "7";
-	final String SHOW_LRLIST = "8";
-	final String SHOW_ORLIST = "9";
+	private final String EXIT = "0";
+	private final String SEARCH_BY_ID = "1";
+	private final String SORT = "2";	
+	private final String SEARCH_BY_BRAND = "3";
+	private final String SEARCH_BY_TYPE = "4";
+	private final String SEARCH_BY_NAME = "5";
+	private final String ADD_CAR = "6";
+	private final String UPDATE_CAR = "7";
+	private final String SHOW_LRLIST = "8";
+	private final String SHOW_ORLIST = "9";
 	
 	@Override
 	public View showView() {

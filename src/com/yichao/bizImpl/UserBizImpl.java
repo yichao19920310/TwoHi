@@ -21,9 +21,12 @@ import com.yichao.daoImpl.UserDaoImpl;
 
 public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz {
 	public static User mUser;
-	public ArrayList<Car> mCarList;
-	public ArrayList<LendRecord> mLendRecordList;
-	public ArrayList<OrderRecord> mOrderRecordList;
+	public static ArrayList<Car> mCarList;
+	public static ArrayList<LendRecord> mLendRecordList;
+	public static ArrayList<OrderRecord> mOrderRecordList;
+	public static LendRecord cLr;
+	public static OrderRecord cOr;
+	public static Car cCar;
 	public static UserDaoImpl ud = new UserDaoImpl();
 	
 	final int ONLINE_CAR = 1;
@@ -114,29 +117,59 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	
 	@Override
 	public boolean lendCar(int carId, int lendDays) {
+		logInfo("租车");
+		cLr = null;
+		boolean isSuccess = false;
 		try {
 			mOrderRecordList = ud.getOrListByUser(mUser.getUserId());
+			mCarList = ud.getCarList();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			logError(e,"从数据库获取所有上架汽车列表和自己的预约单列表");
 			e.printStackTrace();
 		}
-		boolean isSuccess = false;
+		
 		for (Car car : mCarList) {
 			if(carId == car.getCarId() && 
 					LENDABLE == car.getCarLendStatus()&& ORDERABLE == car.getCarOrderStatus()) {
-				isSuccess = ud.lendCar(carId, lendDays);
+				try {
+					cLr = ud.lendCar(carId, lendDays);
+				} catch (SQLException e) {
+					logError(e,"命令数据库执行借车事务异常执行回滚");
+					e.printStackTrace();
+				}
+				if(null == cLr) {
+					isSuccess = false;
+					
+					
+				}else {
+					isSuccess = true;
+				
+					
+				}
 				break;
 			}else if(carId == car.getCarId() && 
 					LENDABLE == car.getCarLendStatus()&& UN_ORDERABLE == car.getCarOrderStatus()) {
 				for (OrderRecord or : mOrderRecordList) {
 					if(or.getCarId() == car.getCarId() && ORDER_ACT == or.getOrStatus()){
-						isSuccess = ud.lendCarByOrder(carId, lendDays,or.getOrId());
-						break;
+						cLr = ud.lendCarByOrder(carId, lendDays,or.getOrId());
+						if(null == cLr) {
+							isSuccess = false;
+							
+							
+						}else {
+							isSuccess = true;
+							
+							
+						}
 					}
+					break;
 				}
+				break;
 			}
 		}
+		
 		return isSuccess;
+		
 	}
 	@Override
 	public void showAllOrderRecord() {
@@ -276,7 +309,17 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	}	
 	@Override
 	public boolean returnCar(int carId) {
-		// TODO Auto-generated method stub
+		try {
+			mLendRecordList = ud.getLrListByUser(mUser.getUserId());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for (LendRecord lr : mLendRecordList) {
+			if(carId == lr.getCarId() && LEND_ACT == lr.getLrStatus()) {
+				ud.returnCar(carId,lr.getLrId());
+			}
+		}
 		return false;
 	}
 	@Override
@@ -307,6 +350,30 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		}else {
 			logger.info("用户"+info);
 		}
+	}
+	@Override
+	public void showLendCar(int carId) {
+		try {
+			cCar = ud.getCarById(carId).get(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("=================================================================================");
+		System.out.println("编号\t租借单据流水号\t汽车名称\t备注\t品牌\t类型\t每日租金\t借车时间");
+		System.out.println(cLr.getLrId()+"\t"+cLr.getLrNumber()+"\t"+cLr.getCarName()+"\t"+cCar.getCarRemark()
+			+"\t"+cCar.getCarBrand()+"\t"+cCar.getCarType()+"\t"+cLr.getCarLendPrice()+"\t"+cLr.getLendDate());
+		
+	}
+	@Override
+	public void showOrderCar(int carId) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void showReturnCar(int carId) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

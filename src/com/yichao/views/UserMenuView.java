@@ -17,16 +17,16 @@ package com.yichao.views;
  */
 public class UserMenuView extends View {
 
-	final String EXIT = "0";
-	final String LEND_CAR = "1";
-	final String ORDER_CAR = "2";
-	final String SORT = "3";
-	final String SEARCH_BY_BRAND = "4";
-	final String SEARCH_BY_TYPE = "5";
-	final String SEARCH_BY_NAME = "6";
-	final String SHOW_MY_LRLIST = "7";
-	final String SHOW_MY_ORLIST = "8";
-	final String RETURN_CAR = "9";
+	private final String EXIT = "0";
+	private final String LEND_CAR = "1";
+	private final String ORDER_CAR = "2";
+	private final String SORT = "3";
+	private final String SEARCH_BY_BRAND = "4";
+	private final String SEARCH_BY_TYPE = "5";
+	private final String SEARCH_BY_NAME = "6";
+	private final String SHOW_MY_LRLIST = "7";
+	private final String SHOW_MY_ORLIST = "8";
+	private final String RETURN_CAR = "9";
  	/* (非 Javadoc)  
 	 * <p>Title: showView</p>  
 	 * <p>Description: </p>  
@@ -79,8 +79,11 @@ public class UserMenuView extends View {
 			int lendDays = Integer.parseInt(command3);			
 			if(ub.lendCar(carId, lendDays)) {
 				System.out.println("租车成功!信息如下:");
+				ub.logInfo("租车成功");
+				ub.showLendCar(carId);
 			}else {
 				System.out.println("租车失败!");
+				ub.logInfo("租车失败");
 			}
 			mView = new UserMenuView();					
 			break;
@@ -113,6 +116,8 @@ public class UserMenuView extends View {
 		case RETURN_CAR:
 			break;
 		default:
+			System.out.println("指令有误!");
+			mView = new UserMenuView();
 			break;
 		}
 		return mView;

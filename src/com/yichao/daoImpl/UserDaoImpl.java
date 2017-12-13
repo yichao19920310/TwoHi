@@ -1,5 +1,6 @@
 package com.yichao.daoImpl;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,16 +12,21 @@ import com.yichao.bean.Car;
 import com.yichao.bean.LendRecord;
 import com.yichao.bean.OrderRecord;
 import com.yichao.bean.User;
+import com.yichao.bizImpl.UserBizImpl;
 import com.yichao.dao.CarDao;
 import com.yichao.dao.LendRecordDao;
 import com.yichao.dao.OrderRecordDao;
 import com.yichao.dao.UserDao;
 import com.yichao.tools.DbHelper;
+import com.yichao.views.View;
+
+import oracle.jdbc.OracleTypes;
 
 public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao {
 
 	private Connection mConnection;
 	private PreparedStatement mStatement;
+	private CallableStatement mCall;
 	private ResultSet rSet;
 	private int rNum;
 	
@@ -28,6 +34,7 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	public UserDaoImpl() {
 		mDB = new DbHelper();
 		mConnection = mDB.getConnection();
+		
 	}
 	/* (非 Javadoc)  
 	 * <p>Title: getUserByName</p>  
@@ -71,13 +78,14 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 */  
 	@Override
 	public boolean insertUser(String userName, String userPwd) throws SQLException {
+		mConnection.setAutoCommit(false);
 		String sql = "insert into userlist values (userid_seq.nextval,?,?)";		
 		
-			mStatement = mConnection.prepareStatement(sql);
-			mStatement.setString(1, userName);
-			mStatement.setString(2, userPwd);
-			rNum = mStatement.executeUpdate();
-		
+		mStatement = mConnection.prepareStatement(sql);
+		mStatement.setString(1, userName);
+		mStatement.setString(2, userPwd);
+		rNum = mStatement.executeUpdate();
+		mConnection.commit();
 		if(rNum > 0) {
 			return true;
 		}
@@ -198,10 +206,60 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @return  
 	 * @see com.yichao.dao.UserDao#lendCar(int, int)  
 	 */  
+	@SuppressWarnings("finally")
 	@Override
-	public boolean lendCar(int carId, int lendDays) {
-		// TODO Auto-generated method stub
-		return false;
+	public LendRecord lendCar(int carId, int lendDays) throws SQLException{
+	
+		LendRecord lr = null;
+		try {
+			mConnection.setAutoCommit(false);
+			mConnection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);  
+			String sql1 = "call lendcar(?,?,?,?)";
+			mCall = mConnection.prepareCall(sql1);
+			mCall.setInt(1, carId);
+			mCall.setInt(2, UserBizImpl.mUser.getUserId());
+			mCall.setInt(3, lendDays);
+			mCall.registerOutParameter(4, OracleTypes.NUMBER);
+			mCall.execute();
+			mConnection.commit();
+			int lrId = mCall.getInt(4);
+			//System.out.println(lrId);
+			if(lrId==0) {
+				return lr;
+			}
+			String sql2 = "select * from lendrecordlist where lrid = ?";
+			mStatement = mConnection.prepareStatement(sql2);
+			mStatement.setInt(1, lrId);
+			rSet = mStatement.executeQuery();
+			
+			if(rSet.next()) {
+				lr = new LendRecord();
+				lr.setLrId(rSet.getInt("LRID"));
+				lr.setLrNumber(rSet.getString("LRNUMBER"));
+				lr.setCarId(rSet.getInt("CARID"));
+				lr.setCarName(rSet.getString("CARNAME"));
+				lr.setUserId(rSet.getInt("USERID"));
+				lr.setUserName(rSet.getString("USERNAME"));
+				lr.setLendDate(rSet.getDate("LENDDATE"));
+				lr.setExpRetuDate(rSet.getDate("EXPRETUDATE"));
+				lr.setActRetuDate(rSet.getDate("ACTRETUDATE"));
+				lr.setCarLendPrice(rSet.getDouble("CARLENDPRICE"));
+				lr.setLateFee(rSet.getDouble("LATEFEE"));
+				lr.setTotalFee(rSet.getDouble("TOTALFEE"));
+				lr.setLrStatus(rSet.getInt("LRSTATUS"));
+				
+			}
+			//System.out.println(lr);
+			
+		} catch (SQLException e) {
+			View.ub.logError(e, "命令数据库执行借车事务");
+			mConnection.rollback();
+			e.printStackTrace();
+		}finally {
+			return lr;
+		}
+		
+		
 	}
 
 	/* (非 Javadoc)  
@@ -212,9 +270,9 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @see com.yichao.dao.UserDao#orderCar(int)  
 	 */  
 	@Override
-	public boolean orderCar(int carId) {
+	public OrderRecord orderCar(int carId) {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 
 	/* (非 Javadoc)  
@@ -224,10 +282,53 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @return  
 	 * @see com.yichao.dao.UserDao#returnCar(int)  
 	 */  
+	@SuppressWarnings("finally")
 	@Override
-	public boolean returnCar(int carId) {
-		// TODO Auto-generated method stub
-		return false;
+	public LendRecord returnCar(int carId,int lrId) {
+		LendRecord lr = null;
+		try {
+			mConnection.setAutoCommit(false);
+			mConnection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);  
+			String sql1 = "call returncar(?,?,?)";
+			mCall = mConnection.prepareCall(sql1);
+			mCall.setInt(1, carId);
+			mCall.setInt(2, UserBizImpl.mUser.getUserId());
+			mCall.setInt(3, lrId);			
+			mCall.execute();
+			mConnection.commit();
+		
+			
+			String sql2 = "select * from lendrecordlist where lrid = ?";
+			mStatement = mConnection.prepareStatement(sql2);
+			mStatement.setInt(1, lrId);
+			rSet = mStatement.executeQuery();
+			
+			if(rSet.next()) {
+				lr = new LendRecord();
+				lr.setLrId(rSet.getInt("LRID"));
+				lr.setLrNumber(rSet.getString("LRNUMBER"));
+				lr.setCarId(rSet.getInt("CARID"));
+				lr.setCarName(rSet.getString("CARNAME"));
+				lr.setUserId(rSet.getInt("USERID"));
+				lr.setUserName(rSet.getString("USERNAME"));
+				lr.setLendDate(rSet.getDate("LENDDATE"));
+				lr.setExpRetuDate(rSet.getDate("EXPRETUDATE"));
+				lr.setActRetuDate(rSet.getDate("ACTRETUDATE"));
+				lr.setCarLendPrice(rSet.getDouble("CARLENDPRICE"));
+				lr.setLateFee(rSet.getDouble("LATEFEE"));
+				lr.setTotalFee(rSet.getDouble("TOTALFEE"));
+				lr.setLrStatus(rSet.getInt("LRSTATUS"));
+				
+			}
+			//System.out.println(lr);
+			
+		} catch (SQLException e) {
+			View.ub.logError(e, "命令数据库执行借车事务");
+			mConnection.rollback();
+			e.printStackTrace();
+		}finally {
+			return lr;
+		}		
 	}
 
 	
@@ -357,8 +458,8 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @see com.yichao.dao.UserDao#lendCarByOrder(int, int, int)  
 	 */  
 	@Override
-	public boolean lendCarByOrder(int carId, int lendDays, int orId) {
-		return false;
+	public LendRecord lendCarByOrder(int carId, int lendDays, int orId) {
+		return null ;
 		// TODO Auto-generated method stub
 		
 	}

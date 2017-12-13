@@ -13,5 +13,8 @@ public interface UserBiz extends Log4j{
 	
 	public abstract boolean orderCar(int carId);
 	public abstract boolean lendOrderCar(int carId);
+	public abstract void showLendCar(int carId);
+	public abstract void showOrderCar(int carId);
+	public abstract void showReturnCar(int carId);
 	
 }

@@ -9,4 +9,5 @@ public interface CarBiz extends Log4j{
 	public abstract void sortCar(int sortType);
 	public abstract void showCarById(int carId);
 	public abstract void showCarByName(String carName);
+	
 }
