@@ -117,8 +117,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	
 	@Override
 	public boolean lendCar(int carId, int lendDays) {
-		logInfo("租车");
-		cLr = null;
+		logInfo("租车");		
 		boolean isSuccess = false;
 		try {
 			mOrderRecordList = ud.getOrListByUser(mUser.getUserId());
@@ -328,9 +327,33 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		return false;
 	}
 	@Override
-	public boolean lendOrderCar(int carId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean lendOrderCar(int carId,int lendDays) {
+		boolean isSuccess = false;
+		try {
+			mOrderRecordList = ud.getOrListByUser(mUser.getUserId());
+			mCarList = ud.getCarList();
+		} catch (SQLException e) {
+			logError(e,"从数据库获取所有上架汽车列表和自己的预约单列表");
+			e.printStackTrace();
+		}
+		for (OrderRecord or : mOrderRecordList) {
+			if(carId == or.getCarId() && ORDER_ACT == or.getOrStatus()) {
+				for (Car car : mCarList) {
+					if(carId == car.getCarId() && LENDABLE == car.getCarLendStatus() && 
+							UN_ORDERABLE == car.getCarOrderStatus()) {
+						cLr = ud.lendCarByOrder(carId, lendDays, or.getOrId());
+						if(null == cLr) {
+							isSuccess = false;		
+						}else {
+							isSuccess = true;									
+						}
+						break;
+					}
+				}
+				break;
+			}
+		}
+		return isSuccess;
 	}
 	@Override
 	public void logError(Throwable e,String info) {
@@ -376,5 +399,6 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		
 	}
 	
+
 	
 }

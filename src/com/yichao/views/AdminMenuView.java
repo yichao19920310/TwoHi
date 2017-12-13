@@ -66,15 +66,20 @@ public class AdminMenuView extends View {
 			mView = new SearchByNameView();
 			break;
 		case ADD_CAR:
+			mView = new AddCarView();
 			break;
 		case UPDATE_CAR:
+			mView = new UpdateCarView();
 			break;
 		case SHOW_LRLIST:
-			
+			mView = new ShowLrListView();
 			break;
 		case SHOW_ORLIST:
+			mView = new ShowOrListView();
 			break;
 		default:
+			System.out.println("指令有误!");
+			mView = new AdminMenuView();
 			break;
 		}
 		return mView;
@@ -90,7 +95,7 @@ public class AdminMenuView extends View {
 		System.out.println("输入2+1:价格降序排列;2+2:价格升序排列");		
 		System.out.println("输入3+品牌编号:按品牌搜索");
 		System.out.println("输入4+类型编号:按类型搜索");
-		System.out.println("输入5:查看全部汽车");
+		System.out.println("输入5:按汽车名称搜索");
 		System.out.println("输入6:添加汽车");
 		System.out.println("输入7+汽车编号:修改汽车信息");
 		System.out.println("输入8:查看租借记录");		

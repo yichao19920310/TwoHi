@@ -138,7 +138,7 @@ public class UserMenuView extends View {
 		System.out.println("输入3+1:价格降序排列;3+2:价格升序排列");		
 		System.out.println("输入4+品牌编号:按品牌搜索");
 		System.out.println("输入5+类型编号:按类型搜索");
-		System.out.println("输入6:按名称查找汽车");
+		System.out.println("输入6:按汽车名称搜索");
 		System.out.println("输入7:查看我的租借记录");
 		System.out.println("输入8:查看我的预约记录");
 		System.out.println("输入9+汽车编号:还车");		
