@@ -271,9 +271,50 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @see com.yichao.dao.UserDao#orderCar(int)  
 	 */  
 	@Override
-	public OrderRecord orderCar(int carId) {
-		// TODO Auto-generated method stub
-		return null;
+	public OrderRecord orderCar(int carId, int orderDays) throws SQLException  {
+		mConnection.setAutoCommit(false);
+		String sql1 = "update carlist set carorderstatus = 0 where carid = ?";
+		mStatement = mConnection.prepareStatement(sql1);
+		mStatement.setInt(1, carId);
+		rNum = mStatement.executeUpdate();
+		if(rNum == 0) {
+			mConnection.rollback();
+			return null;
+		}
+		String sql2 = "insert into orderrecordlist values(orid_seq.nextval,ornum(orid_seq.currval),?,getcarnamebyid(?),?,getusernamebyid(?),sysdate,sysdate+?,null,default)";
+		mStatement = mConnection.prepareStatement(sql2);
+		mStatement.setInt(1, carId);
+		mStatement.setInt(2, carId);
+		mStatement.setInt(3, UserBizImpl.mUser.getUserId());
+		mStatement.setInt(4, UserBizImpl.mUser.getUserId());
+		mStatement.setInt(5, orderDays);
+		rNum = mStatement.executeUpdate();
+		if(rNum == 0) {
+			mConnection.rollback();
+			return null;
+		}else {
+			mConnection.commit();
+		}
+		String sql3 = "select * from orderrecordlist where carid = ? and userid = ? and orstatus = 1";
+		mStatement = mConnection.prepareStatement(sql3);
+		mStatement.setInt(1, carId);
+		mStatement.setInt(2, UserBizImpl.mUser.getUserId());
+		rSet = mStatement.executeQuery();
+		OrderRecord or = null;
+		if(rSet.next()) {
+			or = new OrderRecord();
+			or.setOrId(rSet.getInt("ORID"));
+			or.setOrNumber(rSet.getString("ORNUMBER"));
+			or.setCarId(rSet.getInt("CARID"));
+			or.setCarName(rSet.getString("CARNAME"));
+			or.setUserId(rSet.getInt("USERID"));
+			or.setUserName(rSet.getString("USERNAME"));
+			or.setExpLendDate(rSet.getDate("EXPLENDDATE"));
+			or.setActLendDate(rSet.getDate("ACTLENDDATE"));
+			or.setOrStatus(rSet.getInt("ORSTATUS"));
+				
+		}
+		return or;
 	}
 
 	/* (·Ç Javadoc)  
@@ -467,7 +508,7 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	@Override
 	public LendRecord lendCarByOrder(int carId, int lendDays, int orId) {
 		return null ;
-		// TODO Auto-generated method stub
+		
 		
 	}
 	

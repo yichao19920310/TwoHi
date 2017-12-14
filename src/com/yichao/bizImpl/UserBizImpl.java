@@ -149,7 +149,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 			}else if(carId == car.getCarId() && 
 					LENDABLE == car.getCarLendStatus()&& UN_ORDERABLE == car.getCarOrderStatus()) {
 				for (OrderRecord or : mOrderRecordList) {
-					if(or.getCarId() == car.getCarId() && ORDER_ACT == or.getOrStatus()){
+					if(or.getCarId() == carId && ORDER_ACT == or.getOrStatus()){
 						cLr = ud.lendCarByOrder(carId, lendDays,or.getOrId());
 						if(null == cLr) {
 							isSuccess = false;
@@ -327,9 +327,32 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		return true;
 	}
 	@Override
-	public boolean orderCar(int carId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean orderCar(int carId, int orderDays) {
+		boolean isSuccess = false;
+		try {			
+			mCarList = ud.getCarList();
+		} catch (SQLException e) {
+			logError(e,"从数据库获取所有上架汽车列表");
+			e.printStackTrace();
+		}
+		for (Car car : mCarList) {
+			if(carId == car.getCarId() && LENDABLE == car.getCarLendStatus() && ORDERABLE == car.getCarOrderStatus()) {
+				try {
+					cOr = ud.orderCar(carId, orderDays);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(cOr == null) {
+					isSuccess = false;
+				}else {
+					isSuccess = true;
+				}
+				break;
+			}
+		}
+		
+		return isSuccess;
 	}
 	@Override
 	public boolean lendOrderCar(int carId,int lendDays) {
@@ -376,7 +399,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		if(mUser != null) {
 			logger.info("用户:"+mUser.getUserName()+info);
 		}else {
-			logger.info("用户"+info);
+			logger.info("未登录用户"+info);
 		}
 	}
 	@Override

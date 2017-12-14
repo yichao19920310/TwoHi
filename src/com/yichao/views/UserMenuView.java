@@ -76,7 +76,11 @@ public class UserMenuView extends View {
 			break;
 		case LEND_CAR:			
 			int carId = Integer.parseInt(command2);
-			int lendDays = Integer.parseInt(command3);			
+			int lendDays = Integer.parseInt(command3);	
+			if(lendDays > 7 || lendDays < 1) {
+				System.out.println("租车天数有误!");
+				return new UserMenuView();
+			}
 			if(ub.lendCar(carId, lendDays)) {
 				System.out.println("租车成功!信息如下:");
 				ub.logInfo("租车成功");
@@ -88,6 +92,20 @@ public class UserMenuView extends View {
 			mView = new UserMenuView();					
 			break;
 		case ORDER_CAR:
+			int carId1 = Integer.parseInt(command2);
+			int orderDays = Integer.parseInt(command3);
+			if(orderDays > 3 || orderDays < 1) {
+				System.out.println("预约天数有误!");
+				return new UserMenuView();
+			}
+			if(ub.orderCar(carId1,orderDays)) {
+				System.out.println("预约成功!信息如下:");
+				ub.showOrderCar(carId1);
+				ub.logInfo("预约成功");
+			}else {
+				System.out.println("预约失败!");
+				ub.logInfo("预约失败");
+			}
 			break;
 		case SORT:
 			int sortType = Integer.parseInt(command2);
@@ -114,11 +132,11 @@ public class UserMenuView extends View {
 			mView = new MyOrListView();
 			break;
 		case RETURN_CAR:
-			int carId1 = Integer.parseInt(command2);
-			if(ub.returnCar(carId1)) {
+			int carId11 = Integer.parseInt(command2);
+			if(ub.returnCar(carId11)) {
 				System.out.println("还车成功!信息如下:");
 				ub.logInfo("还车成功");
-				ub.showReturnCar(carId1);
+				ub.showReturnCar(carId11);
 			}else {
 				System.out.println("还车失败!");
 				ub.logInfo("还车失败");
@@ -144,8 +162,8 @@ public class UserMenuView extends View {
 	private void showMenu() {
 		System.out.println();
 		System.out.println("输入0:退出");
-		System.out.println("输入1+汽车编号+租借天数:租车");
-		System.out.println("输入2+汽车编号:预约车");
+		System.out.println("输入1+汽车编号+租借天数:租车(租车天数<=7)");
+		System.out.println("输入2+汽车编号+预约天数:预约车(预约天数<=3)");
 		System.out.println("输入3+1:价格降序排列;3+2:价格升序排列");		
 		System.out.println("输入4+品牌编号:按品牌搜索");
 		System.out.println("输入5+类型编号:按类型搜索");
