@@ -21,6 +21,7 @@ import com.yichao.tools.DbHelper;
 import com.yichao.views.View;
 
 import oracle.jdbc.OracleTypes;
+import oracle.jdbc.oracore.OracleType;
 
 public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao {
 
@@ -289,14 +290,19 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 		try {
 			mConnection.setAutoCommit(false);
 			mConnection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);  
-			String sql1 = "call returncar(?,?,?)";
+			String sql1 = "call returncar(?,?,?,?)";
 			mCall = mConnection.prepareCall(sql1);
 			mCall.setInt(1, carId);
 			mCall.setInt(2, UserBizImpl.mUser.getUserId());
-			mCall.setInt(3, lrId);			
+			mCall.setInt(3, lrId);
+			mCall.registerOutParameter(4, OracleTypes.NUMBER);
 			mCall.execute();
 			mConnection.commit();
-		
+			int state = mCall.getInt(4);
+			System.out.println("信息代码:"+state);
+			if(state != 5) {
+				return lr;
+			}
 			
 			String sql2 = "select * from lendrecordlist where lrid = ?";
 			mStatement = mConnection.prepareStatement(sql2);
@@ -304,6 +310,7 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 			rSet = mStatement.executeQuery();
 			
 			if(rSet.next()) {
+				System.out.println("检查点1");
 				lr = new LendRecord();
 				lr.setLrId(rSet.getInt("LRID"));
 				lr.setLrNumber(rSet.getString("LRNUMBER"));
@@ -323,7 +330,7 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 			//System.out.println(lr);
 			
 		} catch (SQLException e) {
-			View.ub.logError(e, "命令数据库执行借车事务");
+			View.ub.logError(e, "命令数据库执行还车事务");
 			mConnection.rollback();
 			e.printStackTrace();
 		}finally {

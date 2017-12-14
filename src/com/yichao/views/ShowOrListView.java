@@ -25,8 +25,60 @@ public class ShowOrListView extends View {
 	 */
 	@Override
 	public View showView() {
-		// TODO Auto-generated method stub
-		return null;
+		ab.showAllOrderRecord();
+		showMenu();
+		boolean b = true;
+		while(b) {
+			String command = iT.getString();
+			String command1 = "";
+			String command2 = "";
+			int index = command.indexOf("+");
+			if(command.length()>2 && index == 1) {
+				command1 =  command.substring(0,index);
+				command2 = command.substring(index + 1);
+				if(iT.isInt(command2)) {
+					
+				}else {
+					System.out.println("指令有误!");
+					return mView = new AdminMenuView();
+				}
+			}else if(command.length()==1 && index == -1) {
+				command1 = command;
+			}else {
+				System.out.println("指令有误!");
+				return mView = new AdminMenuView();
+			}
+			switch(command1) {
+			case "0":
+				b = false;
+				break;
+			case "1":
+				ab.showAllOrderRecord();
+				break;
+			case "2":
+				int userId = Integer.parseInt(command2);
+				ab.showOrderRecordByUser(userId);
+				break;
+			case "3":
+				int carId = Integer.parseInt(command2);
+				ab.showOrderRecordByCar(carId);
+				break;
+			default:
+				System.out.println("指令有误!");
+				break;
+			}
+		}
+		
+		return mView = new AdminMenuView();
+	}
+
+	private void showMenu() {
+		System.out.println();
+		System.out.println("输入0:返回");
+		System.out.println("输入1:查看所有预约记录");
+		System.out.println("输入2+用户编号:查看用户预约记录");
+		System.out.println("输入3+汽车编号:查看汽车预约记录");
+		
 	}
 
 }

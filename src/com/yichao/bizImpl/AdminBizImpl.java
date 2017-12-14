@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 
 import com.yichao.bean.Admin;
 import com.yichao.bean.Car;
+import com.yichao.bean.LendRecord;
+import com.yichao.bean.OrderRecord;
 import com.yichao.biz.AdminBiz;
 import com.yichao.biz.CarBiz;
 import com.yichao.biz.LendRecordBiz;
@@ -19,7 +21,7 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 	public static Admin mAdmin;
 	public ArrayList<Car> mCarList;
 	private static AdminDaoImpl ad = new AdminDaoImpl();
-	
+	public static Car cCar;
 	final int ONLINE_CAR = 1;
 	final int OFFLINE_CAR = 0;
 	final int LENDABLE = 1;
@@ -32,37 +34,115 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 	final int SEARCH_TYPE = 2;
 	@Override
 	public void showAllOrderRecord() {
-		// TODO Auto-generated method stub
-		
+		ArrayList<OrderRecord> orList = new ArrayList<>();
+		try {
+			orList = ad.getOrList();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("=====================================================");
+		System.out.println("编号\t汽车编号\t汽车名称\t用户编号\t用户名\t预  约   日  期\t预期租赁日期\t实际租赁日期");
+		for (OrderRecord or : orList) {
+			System.out.println(or.getOrId()+"\t"+or.getCarId()+"\t"+or.getCarName()+"\t"
+					+or.getUserId()+"\t"+or.getUserName()+"\t"+or.getOrderDate()+"\t"
+					+or.getExpLendDate()+"\t"+or.getActLendDate());
+		}
 	}
 
 	@Override
 	public void showOrderRecordByUser(int userId) {
-		// TODO Auto-generated method stub
+		ArrayList<OrderRecord> orList = new ArrayList<>();
+		try {
+			orList = ad.getOrListByUser(userId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("=====================================================");
+		System.out.println("编号\t汽车编号\t汽车名称\t用户编号\t用户名\t预  约   日  期\t预期租赁日期\t实际租赁日期");
+		for (OrderRecord or : orList) {
+			System.out.println(or.getOrId()+"\t"+or.getCarId()+"\t"+or.getCarName()+"\t"
+					+or.getUserId()+"\t"+or.getUserName()+"\t"+or.getOrderDate()+"\t"
+					+or.getExpLendDate()+"\t"+or.getActLendDate());
+		}
 		
 	}
 
 	@Override
 	public void showOrderRecordByCar(int carId) {
-		// TODO Auto-generated method stub
-		
+		ArrayList<OrderRecord> orList = new ArrayList<>();
+		try {
+			orList = ad.getOrListByCar(carId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("=====================================================");
+		System.out.println("编号\t汽车编号\t汽车名称\t用户编号\t用户名\t预  约   日  期\t预期租赁日期\t实际租赁日期");
+		for (OrderRecord or : orList) {
+			System.out.println(or.getOrId()+"\t"+or.getCarId()+"\t"+or.getCarName()+"\t"
+					+or.getUserId()+"\t"+or.getUserName()+"\t"+or.getOrderDate()+"\t"
+					+or.getExpLendDate()+"\t"+or.getActLendDate());
+		}
 	}
 
 	@Override
 	public void showAllLendRecord() {
-		// TODO Auto-generated method stub
-		
+		ArrayList<LendRecord> lrList = new ArrayList<>();
+		try {
+			lrList = ad.getLrList();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("=====================================================");
+		System.out.println("编号\t汽车编号\t汽车名称\t用户编号\t用户名\t每日租金\t租金总额\t滞纳金\t借  出  日  期\t预期归还日期\t实际归还日期");
+		for (LendRecord lr : lrList) {
+			System.out.println(lr.getLrId()+"\t"+lr.getCarId()+"\t"+lr.getCarName()+"\t"
+					+lr.getUserId()+"\t"+lr.getUserName()+"\t"+lr.getCarLendPrice()+"\t"
+					+lr.getTotalFee()+"\t"+lr.getLateFee()+"\t"+lr.getLendDate()+"\t"
+					+lr.getExpRetuDate()+"\t"+lr.getActRetuDate());
+		}
 	}
 
 	@Override
 	public void showLendRecordByUser(int userId) {
-		// TODO Auto-generated method stub
+		ArrayList<LendRecord> lrList = new ArrayList<>();
+		try {
+			lrList = ad.getLrListByUser(userId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("=====================================================");
+		System.out.println("编号\t汽车编号\t汽车名称\t用户编号\t用户名\t每日租金\t租金总额\t滞纳金\t借  出  日  期\t预期归还日期\t实际归还日期");
+		for (LendRecord lr : lrList) {
+			System.out.println(lr.getLrId()+"\t"+lr.getCarId()+"\t"+lr.getCarName()+"\t"
+					+lr.getUserId()+"\t"+lr.getUserName()+"\t"+lr.getCarLendPrice()+"\t"
+					+lr.getTotalFee()+"\t"+lr.getLateFee()+"\t"+lr.getLendDate()+"\t"
+					+lr.getExpRetuDate()+"\t"+lr.getActRetuDate());
+		}
 		
 	}
 
 	@Override
 	public void showLendRecordByCar(int carId) {
-		// TODO Auto-generated method stub
+		ArrayList<LendRecord> lrList = new ArrayList<>();
+		try {
+			lrList = ad.getLrListByCar(carId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("=====================================================");
+		System.out.println("编号\t汽车编号\t汽车名称\t用户编号\t用户名\t每日租金\t租金总额\t滞纳金\t借  出  日  期\t预期归还日期\t实际归还日期");
+		for (LendRecord lr : lrList) {
+			System.out.println(lr.getLrId()+"\t"+lr.getCarId()+"\t"+lr.getCarName()+"\t"
+					+lr.getUserId()+"\t"+lr.getUserName()+"\t"+lr.getCarLendPrice()+"\t"
+					+lr.getTotalFee()+"\t"+lr.getLateFee()+"\t"+lr.getLendDate()+"\t"
+					+lr.getExpRetuDate()+"\t"+lr.getActRetuDate());
+		}
 		
 	}
 
@@ -151,8 +231,21 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 
 	@Override
 	public void showCarById(int carId) {
-		// TODO Auto-generated method stub
 		
+		cCar = null;
+		try {
+			cCar = ad.getCarById(carId).get(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("=====================================================");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约\t是否上架");
+		System.out.println(""+cCar.getCarId()+"\t"+cCar.getCarName()+"\t"+cCar.getCarRemark()+"\t"
+				+cCar.getCarBrand()+"("+cCar.getCarBrandId()+")\t"+cCar.getCarType()+"("+cCar.getCarTypeId()
+				+")\t"+cCar.getCarLendPrice()+"/天\t"+((LENDABLE == cCar.getCarLendStatus())?"是":"否")
+				+"\t"+((ORDERABLE == cCar.getCarOrderStatus())?"是":"否")+"\t"
+				+((ONLINE_CAR == cCar.getCarStatus())?"是":"否"));		
 	}
 
 	@Override
@@ -207,20 +300,38 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 
 	@Override
 	public boolean addCar(Car car) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isSuccess = false;
+		try {
+			isSuccess = ad.insertCar(car);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isSuccess;
 	}
 
 	@Override
 	public boolean updateCarStatus(int carId, int carStatus) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isSuccess = false;
+		try {
+			isSuccess = ad.updateCarStatus(carId, carStatus);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isSuccess;
 	}
 
 	@Override
 	public boolean updateCarLendPrice(int carId, double carLendPrice) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isSuccess = false;
+		try {
+			isSuccess = ad.updateLendPrice(carId, carLendPrice);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isSuccess;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.yichao.views;
 
+import com.yichao.bizImpl.AdminBizImpl;
+
 public class AdminMenuView extends View {
 
 	private final String EXIT = "0";
@@ -69,7 +71,15 @@ public class AdminMenuView extends View {
 			mView = new AddCarView();
 			break;
 		case UPDATE_CAR:
-			mView = new UpdateCarView();
+			int carId1 = Integer.parseInt(command2);
+			ab.showCarById(carId1);
+			if(AdminBizImpl.cCar.getCarLendStatus() == 0 || AdminBizImpl.cCar.getCarOrderStatus() == 0) {
+				System.out.println("该车已被租赁或预约,暂时不可修改!");
+				mView = new AdminMenuView();
+			}else {
+				updateCar();
+			}			
+			mView = new AdminMenuView();
 			break;
 		case SHOW_LRLIST:
 			mView = new ShowLrListView();
@@ -85,6 +95,52 @@ public class AdminMenuView extends View {
 		return mView;
 	
 		
+	}
+
+	private void updateCar() {
+		System.out.println("请输入要更改的内容编号:");
+		System.out.println("1:租赁价格 2:上架下架");
+		int choose = iT.getInt();
+		switch(choose) {
+		case 1:
+			int lendPrice = 0;
+			while(true) {
+				System.out.println("请输入新的租赁价格:");
+				lendPrice = iT.getInt();
+				if(lendPrice < 0) {
+					System.out.println("价格不能为负数");
+					continue;
+				}else {
+					break;
+				}				
+			}
+			if(ab.updateCarLendPrice(AdminBizImpl.cCar.getCarId(), lendPrice)) {
+				System.out.println("修改成功!");
+				ab.showCarById(AdminBizImpl.cCar.getCarId());
+			}else {
+				System.out.println("修改失败!");
+			}
+			break;
+		case 2:
+			int carStatus = 0;
+			while(true) {
+				System.out.println("请输入1:上架 0:下架");
+				carStatus = iT.getInt();
+				if(carStatus>1 || carStatus<0) {
+					System.out.println("请输入1或0!");
+					continue;
+				}else {
+					break;
+				}
+			}
+			if(ab.updateCarStatus(AdminBizImpl.cCar.getCarId(), carStatus)) {
+				System.out.println("修改成功!");
+				ab.showCarById(AdminBizImpl.cCar.getCarId());
+			}else {
+				System.out.println("修改失败!");
+			}
+			break;
+		}
 	}
 
 	private void showMenu() {

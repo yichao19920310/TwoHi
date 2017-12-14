@@ -114,6 +114,17 @@ public class UserMenuView extends View {
 			mView = new MyOrListView();
 			break;
 		case RETURN_CAR:
+			int carId1 = Integer.parseInt(command2);
+			if(ub.returnCar(carId1)) {
+				System.out.println("还车成功!信息如下:");
+				ub.logInfo("还车成功");
+				ub.showReturnCar(carId1);
+			}else {
+				System.out.println("还车失败!");
+				ub.logInfo("还车失败");
+			}
+			mView = new UserMenuView();
+			
 			break;
 		default:
 			System.out.println("指令有误!");

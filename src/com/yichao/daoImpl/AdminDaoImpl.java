@@ -285,20 +285,50 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 	}
 
 	@Override
-	public boolean insertCar(Car car) {
-		// TODO Auto-generated method stub
+	public boolean insertCar(Car car) throws SQLException {
+		String sql = "insert into carlist values(carid_seq.nextval,?,?,?,?,?,?,?,?,?,default,default)";
+		mStatement = mConnection.prepareStatement(sql);
+		mStatement.setString(1, car.getCarName());
+		mStatement.setString(2, car.getCarRemark());
+		mStatement.setString(3, car.getCarBrand());
+		mStatement.setInt(4, car.getCarBrandId());
+		mStatement.setString(5, car.getCarType());
+		mStatement.setInt(6, car.getCarTypeId());
+		mStatement.setDouble(7, car.getCarPrice());
+		mStatement.setDouble(8, car.getCarLendPrice());
+		mStatement.setInt(9, car.getCarStatus());
+		rNum = mStatement.executeUpdate();
+		if(rNum > 0) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
-	public boolean updateLendPrice(int carId, double lendprice) {
-		// TODO Auto-generated method stub
+	public boolean updateLendPrice(int carId, double lendprice) throws SQLException {
+		String sql = "update carlist set carlendprice = ? where carid = ?";
+		mStatement = mConnection.prepareStatement(sql);
+		mStatement.setDouble(1, lendprice);
+		mStatement.setInt(2, carId);
+		rNum = mStatement.executeUpdate();
+		if(rNum>0) {
+			mConnection.commit();
+			return true;
+		}
 		return false;
 	}
 
 	@Override
-	public boolean updateCarStatus(int carId, int carStatus) {
-		// TODO Auto-generated method stub
+	public boolean updateCarStatus(int carId, int carStatus) throws SQLException {
+		String sql = "update carlist set carstatus = ? where carid = ?";
+		mStatement = mConnection.prepareStatement(sql);
+		mStatement.setInt(1, carStatus);
+		mStatement.setInt(2, carId);
+		rNum = mStatement.executeUpdate();
+		if(rNum>0) {
+			mConnection.commit();
+			return true;
+		}
 		return false;
 	}
 

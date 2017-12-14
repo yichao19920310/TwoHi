@@ -212,7 +212,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 			e.printStackTrace();
 		}
 		System.out.println("=================================================================================");
-		System.out.println("编号\t汽车编号\t汽车名称\t租金总额\t借车时间\t最后还车期限\t实际还车时间\t尚未还车");
+		System.out.println("编号\t汽车编号\t汽车名称\t租金总额\t借  车  日  期\t最后还车期限\t实际还车时间\t尚未还车");
 		for (LendRecord lr : mLendRecordList) {
 			System.out.println(lr.getLrId()+"\t"+lr.getCarId()+"\t"+lr.getCarName()+"\t"
 					+lr.getTotalFee()+"\t"+lr.getLendDate()+"\t"+lr.getExpRetuDate()+"\t"
@@ -308,6 +308,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	}	
 	@Override
 	public boolean returnCar(int carId) {
+		cLr = null;
 		try {
 			mLendRecordList = ud.getLrListByUser(mUser.getUserId());
 		} catch (SQLException e) {
@@ -316,10 +317,14 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		}
 		for (LendRecord lr : mLendRecordList) {
 			if(carId == lr.getCarId() && LEND_ACT == lr.getLrStatus()) {
-				ud.returnCar(carId,lr.getLrId());
+				cLr = ud.returnCar(carId,lr.getLrId());
+				break;
 			}
 		}
-		return false;
+		if(cLr == null) {
+			return false;
+		}
+		return true;
 	}
 	@Override
 	public boolean orderCar(int carId) {
@@ -383,7 +388,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 			e.printStackTrace();
 		}
 		System.out.println("=================================================================================");
-		System.out.println("编号\t租借单据流水号\t汽车名称\t备注\t品牌\t类型\t每日租金\t借车时间");
+		System.out.println("编号\t租借单据流水号\t汽车名称\t备注\t品牌\t类型\t每日租金\t借车日期");
 		System.out.println(cLr.getLrId()+"\t"+cLr.getLrNumber()+"\t"+cLr.getCarName()+"\t"+cCar.getCarRemark()
 			+"\t"+cCar.getCarBrand()+"\t"+cCar.getCarType()+"\t"+cLr.getCarLendPrice()+"\t"+cLr.getLendDate());
 		
@@ -395,8 +400,17 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 	}
 	@Override
 	public void showReturnCar(int carId) {
-		// TODO Auto-generated method stub
-		
+		try {
+			cCar = ud.getCarById(carId).get(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("=================================================================================");
+		System.out.println("编号\t租借单据流水号\t汽车名称\t每日租金\t滞纳金\t租金总额\t预期还车日期\t实际还车日期");
+		System.out.println(cLr.getLrId()+"\t"+cLr.getLrNumber()+"\t"+cLr.getCarName()+"\t"
+				+cLr.getCarLendPrice()+"\t"+cLr.getLateFee()+"\t"+cLr.getTotalFee()+"\t"
+				+cLr.getExpRetuDate()+"\t"+cLr.getActRetuDate());
 	}
 	
 
