@@ -212,7 +212,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 			e.printStackTrace();
 		}
 		System.out.println("=================================================================================");
-		System.out.println("编号\t汽车编号\t汽车名称\t租金总额\t借  车  日  期\t最后还车期限\t实际还车时间\t尚未还车");
+		System.out.println("编号\t汽车编号\t汽车名称\t租金总额\t租借汽车日期\t最后还车期限\t实际还车时间\t尚未还车");
 		for (LendRecord lr : mLendRecordList) {
 			System.out.println(lr.getLrId()+"\t"+lr.getCarId()+"\t"+lr.getCarName()+"\t"
 					+lr.getTotalFee()+"\t"+lr.getLendDate()+"\t"+lr.getExpRetuDate()+"\t"
@@ -415,10 +415,21 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		System.out.println(cLr.getLrId()+"\t"+cLr.getLrNumber()+"\t"+cLr.getCarName()+"\t"+cCar.getCarRemark()
 			+"\t"+cCar.getCarBrand()+"\t"+cCar.getCarType()+"\t"+cLr.getCarLendPrice()+"\t"+cLr.getLendDate());
 		
+		
 	}
 	@Override
 	public void showOrderCar(int carId) {
-		// TODO Auto-generated method stub
+		try {
+			cCar = ud.getCarById(carId).get(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("=================================================================================");
+		System.out.println("编号\t预约单据流水号\t汽车名称\t备注\t品牌\t类型\t每日租金\t预计借车日期\t预约日期");
+		System.out.println(cOr.getOrId()+"\t"+cOr.getOrNumber()+"\t"+cOr.getCarName()+"\t"+cCar.getCarRemark()
+			+"\t"+cCar.getCarBrand()+"\t"+cCar.getCarType()+"\t"+cCar.getCarLendPrice()+"\t"+cOr.getExpLendDate()
+			+"\t"+cOr.getOrderDate());
 		
 	}
 	@Override

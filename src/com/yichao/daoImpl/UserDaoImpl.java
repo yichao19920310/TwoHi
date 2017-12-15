@@ -21,7 +21,6 @@ import com.yichao.tools.DbHelper;
 import com.yichao.views.View;
 
 import oracle.jdbc.OracleTypes;
-import oracle.jdbc.oracore.OracleType;
 
 public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao {
 
@@ -340,7 +339,7 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 			mCall.execute();
 			mConnection.commit();
 			int state = mCall.getInt(4);
-			System.out.println("信息代码:"+state);
+			//System.out.println("信息代码:"+state);
 			if(state != 5) {
 				return lr;
 			}
@@ -351,7 +350,7 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 			rSet = mStatement.executeQuery();
 			
 			if(rSet.next()) {
-				System.out.println("检查点1");
+				//System.out.println("检查点1");
 				lr = new LendRecord();
 				lr.setLrId(rSet.getInt("LRID"));
 				lr.setLrNumber(rSet.getString("LRNUMBER"));
@@ -505,9 +504,59 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	 * @param orId  
 	 * @see com.yichao.dao.UserDao#lendCarByOrder(int, int, int)  
 	 */  
+	@SuppressWarnings("finally")
 	@Override
 	public LendRecord lendCarByOrder(int carId, int lendDays, int orId) {
-		return null ;
+		LendRecord lr = null;
+		try {
+			mConnection.setAutoCommit(false);
+			mConnection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);  
+			String sql1 = "call lendordercar(?,?,?,?,?)";
+			mCall = mConnection.prepareCall(sql1);
+			mCall.setInt(1, carId);
+			mCall.setInt(2, UserBizImpl.mUser.getUserId());
+			mCall.setInt(3, lendDays);
+			mCall.setInt(4, orId);
+			mCall.registerOutParameter(5, OracleTypes.NUMBER);
+			mCall.execute();
+			mConnection.commit();
+			int lrId = mCall.getInt(5);
+			//System.out.println(lrId);
+			if(lrId==0) {
+				return lr;
+			}
+			String sql2 = "select * from lendrecordlist where lrid = ?";
+			mStatement = mConnection.prepareStatement(sql2);
+			mStatement.setInt(1, lrId);
+			rSet = mStatement.executeQuery();
+			
+			if(rSet.next()) {
+				lr = new LendRecord();
+				lr.setLrId(rSet.getInt("LRID"));
+				lr.setLrNumber(rSet.getString("LRNUMBER"));
+				lr.setCarId(rSet.getInt("CARID"));
+				lr.setCarName(rSet.getString("CARNAME"));
+				lr.setUserId(rSet.getInt("USERID"));
+				lr.setUserName(rSet.getString("USERNAME"));
+				lr.setLendDate(rSet.getDate("LENDDATE"));
+				lr.setExpRetuDate(rSet.getDate("EXPRETUDATE"));
+				lr.setActRetuDate(rSet.getDate("ACTRETUDATE"));
+				lr.setCarLendPrice(rSet.getDouble("CARLENDPRICE"));
+				lr.setLateFee(rSet.getDouble("LATEFEE"));
+				lr.setTotalFee(rSet.getDouble("TOTALFEE"));
+				lr.setLrStatus(rSet.getInt("LRSTATUS"));
+				
+			}
+			//System.out.println(lr);
+			
+		} catch (SQLException e) {
+			View.ub.logError(e, "命令数据库执行通过预约借车事务");
+			mConnection.rollback();
+			e.printStackTrace();
+		}finally {
+			return lr;
+		}
+		
 		
 		
 	}

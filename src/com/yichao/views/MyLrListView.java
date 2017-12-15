@@ -36,6 +36,7 @@ public class MyLrListView extends View {
 		case RETURN_CAR:
 			int carId = Integer.parseInt(command2);
 			ub.returnCar(carId);
+			mView = new MyLrListView();
 			break;
 		default:
 			System.out.println("÷∏¡Ó”–ŒÛ!");
