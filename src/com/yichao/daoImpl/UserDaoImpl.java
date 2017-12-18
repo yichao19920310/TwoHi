@@ -36,13 +36,15 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 		mConnection = mDB.getConnection();
 		
 	}
-	/* (非 Javadoc)  
-	 * <p>Title: getUserByName</p>  
-	 * <p>Description: </p>  
-	 * @param userName
-	 * @return  
-	 * @see com.yichao.dao.UserDao#getUserByName(java.lang.String)  
-	 */  
+	/**
+	 * 
+	  * <p>Title: getUserByName</p>   
+	  * <p>Description: 通过用户名从数据库获取用户对象</p>   
+	  * @param userName
+	  * @return 查到的用户
+	  * @throws SQLException   
+	  * @see com.yichao.dao.UserDao#getUserByName(java.lang.String)
+	 */
 	@Override
 	public User getUserByName(String userName) throws SQLException {
 		String sql = "select * from UserList where userName = ?";
@@ -68,14 +70,16 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 		return u;	
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: insertUser</p>  
-	 * <p>Description: </p>  
-	 * @param userName
-	 * @param userPwd
-	 * @return  
-	 * @see com.yichao.dao.UserDao#insertUser(java.lang.String, java.lang.String)  
-	 */  
+	/**
+	 * 
+	  * <p>Title: insertUser</p>   
+	  * <p>Description: 向数据库插入用户</p>   
+	  * @param userName
+	  * @param userPwd
+	  * @return 
+	  * @throws SQLException   
+	  * @see com.yichao.dao.UserDao#insertUser(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean insertUser(String userName, String userPwd) throws SQLException {
 		mConnection.setAutoCommit(false);
@@ -93,12 +97,14 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 		return false;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: getCarList</p>  
-	 * <p>Description: </p>  
-	 * @return  
-	 * @see com.yichao.dao.UserDao#getCarList()  
-	 */  
+	/**
+	 * 
+	  * <p>Title: getCarList</p>   
+	  * <p>Description: 从数据库获取所有上架汽车</p>   
+	  * @return 汽车集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.CarDao#getCarList()
+	 */
 	@Override
 	public ArrayList<Car> getCarList() throws SQLException {
 		String sql = "select * from carlist where carstatus = 1";
@@ -128,13 +134,15 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 		return carList;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: getCarById</p>  
-	 * <p>Description: </p>  
-	 * @param carId
-	 * @return  
-	 * @see com.yichao.dao.UserDao#getCarById(int)  
-	 */  
+	/**
+	 * 
+	  * <p>Title: getCarById</p>   
+	  * <p>Description: 通过id从数据库获取汽车</p>   
+	  * @param carId
+	  * @return 汽车集合(理论size<=1)
+	  * @throws SQLException   
+	  * @see com.yichao.dao.CarDao#getCarById(int)
+	 */
 	@Override
 	public ArrayList<Car> getCarById(int carId) throws SQLException {
 		String sql = "select * from carlist where carid = ? and carstatus = 1";
@@ -163,13 +171,15 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 		return carList;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: getCarByName</p>  
-	 * <p>Description: </p>  
-	 * @param carName
-	 * @return  
-	 * @see com.yichao.dao.UserDao#getCarByName(java.lang.String)  
-	 */  
+	/**
+	 * 
+	  * <p>Title: getCarByName</p>   
+	  * <p>Description: 通过汽车名从数据库获取汽车</p>   
+	  * @param carName
+	  * @return 汽车集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.CarDao#getCarByName(java.lang.String)
+	 */
 	@Override
 	public ArrayList<Car> getCarByName(String carName) throws SQLException {
 		String sql = "select * from carlist where carname like '%'||?||'%' and carstatus = 1";
@@ -198,14 +208,16 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 		return carList;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: lendCar</p>  
-	 * <p>Description: </p>  
-	 * @param carId
-	 * @param lendDays
-	 * @return  
-	 * @see com.yichao.dao.UserDao#lendCar(int, int)  
-	 */  
+	/**
+	 * 
+	  * <p>Title: lendCar</p>   
+	  * <p>Description: 执行借车事务</p>   
+	  * @param carId
+	  * @param lendDays
+	  * @return 租赁记录
+	  * @throws SQLException   
+	  * @see com.yichao.dao.UserDao#lendCar(int, int)
+	 */
 	@SuppressWarnings("finally")
 	@Override
 	public LendRecord lendCar(int carId, int lendDays) throws SQLException{
@@ -262,13 +274,16 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 		
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: orderCar</p>  
-	 * <p>Description: </p>  
-	 * @param carId
-	 * @return  
-	 * @see com.yichao.dao.UserDao#orderCar(int)  
-	 */  
+	/**
+	 * 
+	  * <p>Title: orderCar</p>   
+	  * <p>Description: 执行预约事务</p>   
+	  * @param carId
+	  * @param orderDays
+	  * @return 预约记录
+	  * @throws SQLException   
+	  * @see com.yichao.dao.UserDao#orderCar(int, int)
+	 */
 	@Override
 	public OrderRecord orderCar(int carId, int orderDays) throws SQLException  {
 		mConnection.setAutoCommit(false);
@@ -311,18 +326,21 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 			or.setExpLendDate(rSet.getDate("EXPLENDDATE"));
 			or.setActLendDate(rSet.getDate("ACTLENDDATE"));
 			or.setOrStatus(rSet.getInt("ORSTATUS"));
+			or.setOrderDate(rSet.getDate("ORDERDATE"));
 				
 		}
 		return or;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: returnCar</p>  
-	 * <p>Description: </p>  
-	 * @param carId
-	 * @return  
-	 * @see com.yichao.dao.UserDao#returnCar(int)  
-	 */  
+	/**
+	 * 
+	  * <p>Title: returnCar</p>   
+	  * <p>Description: 执行还车事务</p>   
+	  * @param carId
+	  * @param lrId
+	  * @return   借出记录
+	  * @see com.yichao.dao.UserDao#returnCar(int, int)
+	 */
 	@SuppressWarnings("finally")
 	@Override
 	public LendRecord returnCar(int carId,int lrId) {
@@ -380,37 +398,28 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 
 	
 
-	/* (非 Javadoc)  
-	 * <p>Title: getLrList</p>  
-	 * <p>Description: </p>  
-	 * @return  
-	 * @see com.yichao.dao.UserDao#getLrList()  
-	 */  
 	@Override
 	public ArrayList<LendRecord> getLrList() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: getOrList</p>  
-	 * <p>Description: </p>  
-	 * @return  
-	 * @see com.yichao.dao.UserDao#getOrList()  
-	 */  
+	
 	@Override
 	public ArrayList<OrderRecord> getOrList() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: getLrListByUser</p>  
-	 * <p>Description: </p>  
-	 * @param userId
-	 * @return  
-	 * @see com.yichao.dao.UserDao#getLrListByUser(int)  
-	 */  
+	/**
+	 * 
+	  * <p>Title: getLrListByUser</p>   
+	  * <p>Description: 获取指定用户租赁记录</p>   
+	  * @param userId
+	  * @return 租赁记录集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.LendRecordDao#getLrListByUser(int)
+	 */
 	@Override
 	public ArrayList<LendRecord> getLrListByUser(int userId) throws SQLException {
 		String sql = "select * from lendrecordlist where userid = ?";
@@ -440,13 +449,15 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 		return lrList;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: getOrListByUser</p>  
-	 * <p>Description: </p>  
-	 * @param userId
-	 * @return  
-	 * @see com.yichao.dao.UserDao#getOrListByUser(int)  
-	 */  
+	/**
+	 * 
+	  * <p>Title: getOrListByUser</p>   
+	  * <p>Description: 获取指定用户预约记录</p>   
+	  * @param userId
+	  * @return 预约记录集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.OrderRecordDao#getOrListByUser(int)
+	 */
 	@Override
 	public ArrayList<OrderRecord> getOrListByUser(int userId) throws SQLException {
 		String sql = "select * from orderrecordlist where userid = ?";
@@ -465,45 +476,36 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 			or.setExpLendDate(rSet.getDate("EXPLENDDATE"));
 			or.setActLendDate(rSet.getDate("ACTLENDDATE"));
 			or.setOrStatus(rSet.getInt("ORSTATUS"));
+			or.setOrderDate(rSet.getDate("ORDERDATE"));
 			orList.add(or);			
 		}
 		
 		return orList;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: getLrListByCar</p>  
-	 * <p>Description: </p>  
-	 * @param carId
-	 * @return  
-	 * @see com.yichao.dao.UserDao#getLrListByCar(int)  
-	 */  
+	
 	@Override
 	public ArrayList<LendRecord> getLrListByCar(int carId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (非 Javadoc)  
-	 * <p>Title: getOrListByCar</p>  
-	 * <p>Description: </p>  
-	 * @param carId
-	 * @return  
-	 * @see com.yichao.dao.UserDao#getOrListByCar(int)  
-	 */  
+	
 	@Override
 	public ArrayList<OrderRecord> getOrListByCar(int carId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	/* (非 Javadoc)  
-	 * <p>Title: lendCarByOrder</p>  
-	 * <p>Description: </p>  
-	 * @param carId
-	 * @param lendDays
-	 * @param orId  
-	 * @see com.yichao.dao.UserDao#lendCarByOrder(int, int, int)  
-	 */  
+	/**
+	 * 
+	  * <p>Title: lendCarByOrder</p>   
+	  * <p>Description: 执行租赁预约的汽车事务</p>   
+	  * @param carId
+	  * @param lendDays
+	  * @param orId
+	  * @return   生成的租赁记录
+	  * @see com.yichao.dao.UserDao#lendCarByOrder(int, int, int)
+	 */
 	@SuppressWarnings("finally")
 	@Override
 	public LendRecord lendCarByOrder(int carId, int lendDays, int orId) {

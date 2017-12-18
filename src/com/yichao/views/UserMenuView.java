@@ -106,6 +106,7 @@ public class UserMenuView extends View {
 				System.out.println("Ô¤Ô¼Ê§°Ü!");
 				ub.logInfo("Ô¤Ô¼Ê§°Ü");
 			}
+			mView = new UserMenuView();
 			break;
 		case SORT:
 			int sortType = Integer.parseInt(command2);

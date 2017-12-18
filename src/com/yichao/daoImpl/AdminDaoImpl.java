@@ -28,6 +28,14 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 		mDB = new DbHelper();
 		mConnection = mDB.getConnection();
 	}
+	/**
+	 * 
+	  * <p>Title: getOrList</p>   
+	  * <p>Description: 从数据库获取预约记录</p>   
+	  * @return 预约记录集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.OrderRecordDao#getOrList()
+	 */
 	@Override
 	public ArrayList<OrderRecord> getOrList() throws SQLException {
 		String sql = "select * from orderrecordlist";
@@ -45,12 +53,22 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 			or.setExpLendDate(rSet.getDate("EXPLENDDATE"));
 			or.setActLendDate(rSet.getDate("ACTLENDDATE"));
 			or.setOrStatus(rSet.getInt("ORSTATUS"));
+			or.setOrderDate(rSet.getDate("ORDERDATE"));
 			orList.add(or);			
 		}
 		
 		return orList;
 	}
 
+	/**
+	 * 
+	  * <p>Title: getOrListByUser</p>   
+	  * <p>Description: 从数据库获取指定用户预约记录</p>   
+	  * @param userId
+	  * @return 预约记录集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.OrderRecordDao#getOrListByUser(int)
+	 */
 	@Override
 	public ArrayList<OrderRecord> getOrListByUser(int userId) throws SQLException {
 		String sql = "select * from orderrecordlist where userid = ?";
@@ -69,12 +87,22 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 			or.setExpLendDate(rSet.getDate("EXPLENDDATE"));
 			or.setActLendDate(rSet.getDate("ACTLENDDATE"));
 			or.setOrStatus(rSet.getInt("ORSTATUS"));
+			or.setOrderDate(rSet.getDate("ORDERDATE"));
 			orList.add(or);			
 		}
 		
 		return orList;
 	}
 
+	/**
+	 * 
+	  * <p>Title: getOrListByCar</p>   
+	  * <p>Description: 从数据库获取指定汽车预约记录</p>   
+	  * @param carId
+	  * @return 预约记录集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.OrderRecordDao#getOrListByCar(int)
+	 */
 	@Override
 	public ArrayList<OrderRecord> getOrListByCar(int carId) throws SQLException {
 		String sql = "select * from orderrecordlist where carid = ?";
@@ -93,12 +121,21 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 			or.setExpLendDate(rSet.getDate("EXPLENDDATE"));
 			or.setActLendDate(rSet.getDate("ACTLENDDATE"));
 			or.setOrStatus(rSet.getInt("ORSTATUS"));
+			or.setOrderDate(rSet.getDate("ORDERDATE"));
 			orList.add(or);			
 		}
 		
 		return orList;
 	}
 
+	/**
+	 * 
+	  * <p>Title: getLrList</p>   
+	  * <p>Description: 从数据库获取所有租赁记录</p>   
+	  * @return 租赁记录集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.LendRecordDao#getLrList()
+	 */
 	@Override
 	public ArrayList<LendRecord> getLrList() throws SQLException {
 		String sql = "select * from lendrecordlist";
@@ -127,6 +164,15 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 		return lrList;
 	}
 
+	/**
+	 * 
+	  * <p>Title: getLrListByUser</p>   
+	  * <p>Description: 从数据库获取指定用户租赁记录</p>   
+	  * @param userId
+	  * @return 租赁记录集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.LendRecordDao#getLrListByUser(int)
+	 */
 	@Override
 	public ArrayList<LendRecord> getLrListByUser(int userId) throws SQLException {
 		String sql = "select * from lendrecordlist where userid = ?";
@@ -185,6 +231,14 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 		return lrList;
 	}
 
+	/**
+	 * 
+	  * <p>Title: getCarList</p>   
+	  * <p>Description: 从数据库获取所有汽车</p>   
+	  * @return 汽车集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.CarDao#getCarList()
+	 */
 	@Override
 	public ArrayList<Car> getCarList() throws SQLException {
 		String sql = "select * from carlist";
@@ -212,6 +266,15 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 		return carList;
 	}
 
+	/**
+	 * 
+	  * <p>Title: getCarById</p>   
+	  * <p>Description: 从数据库获取指定汽车</p>   
+	  * @param carId
+	  * @return 汽车集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.CarDao#getCarById(int)
+	 */
 	@Override
 	public ArrayList<Car> getCarById(int carId) throws SQLException {
 		String sql = "select * from carlist where carid = ?";
@@ -240,6 +303,15 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 		return carList;
 	}
 
+	/**
+	 * 
+	  * <p>Title: getCarByName</p>   
+	  * <p>Description: 通过汽车名称从数据库获取汽车,可模糊查询</p>   
+	  * @param carName
+	  * @return 汽车集合
+	  * @throws SQLException   
+	  * @see com.yichao.dao.CarDao#getCarByName(java.lang.String)
+	 */
 	@Override
 	public ArrayList<Car> getCarByName(String carName) throws SQLException {
 		String sql = "select * from carlist where carname like '%'||?||'%'";
@@ -268,6 +340,15 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 		return carList;
 	}
 
+	/**
+	 * 
+	  * <p>Title: getAdminByName</p>   
+	  * <p>Description: 通过管理员用户名从数据库获取管理员对象</p>   
+	  * @param adminName
+	  * @return 管理员对象
+	  * @throws SQLException   
+	  * @see com.yichao.dao.AdminDao#getAdminByName(java.lang.String)
+	 */
 	@Override
 	public Admin getAdminByName(String adminName) throws SQLException {
 		String sql = "select * from adminlist where adminname = ?";
@@ -284,6 +365,15 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 		return null;
 	}
 
+	/**
+	 * 
+	  * <p>Title: insertCar</p>   
+	  * <p>Description: 向数据库插入汽车</p>   
+	  * @param car
+	  * @return 
+	  * @throws SQLException   
+	  * @see com.yichao.dao.AdminDao#insertCar(com.yichao.bean.Car)
+	 */
 	@Override
 	public boolean insertCar(Car car) throws SQLException {
 		String sql = "insert into carlist values(carid_seq.nextval,?,?,?,?,?,?,?,?,?,default,default)";
@@ -304,6 +394,16 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 		return false;
 	}
 
+	/**
+	 * 
+	  * <p>Title: updateLendPrice</p>   
+	  * <p>Description: 更改汽车租赁价格</p>   
+	  * @param carId
+	  * @param lendprice
+	  * @return
+	  * @throws SQLException   
+	  * @see com.yichao.dao.AdminDao#updateLendPrice(int, double)
+	 */
 	@Override
 	public boolean updateLendPrice(int carId, double lendprice) throws SQLException {
 		String sql = "update carlist set carlendprice = ? where carid = ?";
@@ -318,6 +418,16 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 		return false;
 	}
 
+	/**
+	 * 
+	  * <p>Title: updateCarStatus</p>   
+	  * <p>Description: 更改汽车上下架</p>   
+	  * @param carId
+	  * @param carStatus
+	  * @return
+	  * @throws SQLException   
+	  * @see com.yichao.dao.AdminDao#updateCarStatus(int, int)
+	 */
 	@Override
 	public boolean updateCarStatus(int carId, int carStatus) throws SQLException {
 		String sql = "update carlist set carstatus = ? where carid = ?";
