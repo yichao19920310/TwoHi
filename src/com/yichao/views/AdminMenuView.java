@@ -57,7 +57,7 @@ public class AdminMenuView extends View {
 		case SEARCH_BY_BRAND:
 			int carBrandId = Integer.parseInt(command2);
 			ab.showAllCar(1, carBrandId);
-			mView = new UserMenuView();
+			mView = new AdminMenuView();
 			break;
 		case SEARCH_BY_TYPE:
 			int carTypeId = Integer.parseInt(command2);

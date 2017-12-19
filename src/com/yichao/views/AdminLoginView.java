@@ -35,6 +35,7 @@ public class AdminLoginView extends View {
 		boolean isSuccess = ab.adminLogin(adminName, adminPwd);
 		if(isSuccess) {
 			System.out.println("µÇÂ¼³É¹¦!");
+			ab.cancelOrder();
 			System.out.println("»¶Ó­" + AdminBizImpl.mAdmin.getAdminName() + "!");
 			mView = new AdminMenuView();
 		}else {

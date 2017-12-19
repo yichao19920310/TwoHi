@@ -52,7 +52,7 @@ public class MyOrListView extends View {
 				System.out.println("通过预约完成租车!信息如下:");
 				ub.showLendCar(carId);
 			}else {
-				System.out.println("操作失败,您未预约该车或未到预约时间!");
+				System.out.println("操作失败,您未预约该车或超过预约时间!");
 			}
 			break;
 		default:

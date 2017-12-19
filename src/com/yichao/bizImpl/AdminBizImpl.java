@@ -1,8 +1,10 @@
 package com.yichao.bizImpl;
 
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 
@@ -220,7 +222,7 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 			logError(e,"从数据库获取所有汽车");
 		}
 		System.out.println("=====================================================");
-		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约\t是否上架");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约\t是否上架");
 		for (Car car : mCarList) {				
 			System.out.println(""+car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
 					+car.getCarBrand()+"("+car.getCarBrandId()+")\t"+car.getCarType()+"("+car.getCarTypeId()
@@ -244,7 +246,7 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 		logInfo("按类型品牌查看汽车");
 		if(SEARCH_BRAND == searchType) {
 			System.out.println("=====================================================");
-			System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约\t是否上架");
+			System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约\t是否上架");
 			for (Car car : mCarList) {
 				if(car.getCarBrandId()==searchId) {
 					System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
@@ -256,7 +258,7 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 			}
 		}else if(SEARCH_TYPE == searchType) {
 			System.out.println("=====================================================");
-			System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约\t是否上架");
+			System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约\t是否上架");
 			for (Car car : mCarList) {
 				if(car.getCarTypeId()==searchId) {
 					System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
@@ -297,7 +299,7 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 			
 		});
 		System.out.println("=====================================================");
-		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约\t是否上架");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约\t是否上架");
 		for (Car car : mCarList) {				
 			System.out.println(""+car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
 					+car.getCarBrand()+"("+car.getCarBrandId()+")\t"+car.getCarType()+"("+car.getCarTypeId()
@@ -326,7 +328,7 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 			e.printStackTrace();
 		}
 		System.out.println("=====================================================");
-		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约\t是否上架");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约\t是否上架");
 		System.out.println(""+cCar.getCarId()+"\t"+cCar.getCarName()+"\t"+cCar.getCarRemark()+"\t"
 				+cCar.getCarBrand()+"("+cCar.getCarBrandId()+")\t"+cCar.getCarType()+"("+cCar.getCarTypeId()
 				+")\t"+cCar.getCarLendPrice()+"/天\t"+((LENDABLE == cCar.getCarLendStatus())?"是":"否")
@@ -352,7 +354,7 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 			e.printStackTrace();
 		}
 		System.out.println("=================================================================================");
-		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约\t是否上架");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约\t是否上架");
 		for (Car car : carList) {
 			System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
 					+car.getCarBrand()+"("+car.getCarBrandId()+")\t"+car.getCarType()+"("+car.getCarTypeId()
@@ -499,6 +501,30 @@ public class AdminBizImpl implements AdminBiz,CarBiz,LendRecordBiz,OrderRecordBi
 		}else {
 			logger.info("管理员"+info);
 		}
+	}
+
+	@Override
+	public void cancelOrder() {
+		ArrayList<OrderRecord> orList = new ArrayList<>();
+		try {
+			orList = ad.getOrList();
+		} catch (SQLException e) {
+			logError(e,"数据库获取预约记录");
+			e.printStackTrace();
+		}
+		Date now = new Date();
+		for (OrderRecord or : orList) {
+			if(ORDER_ACT == or.getOrStatus() && or.getExpLendDate().before(now)) {
+				try {
+					ad.cancelOrder(or.getOrId(),or.getCarId());
+					logInfo("自动取消过期预约单id为"+or.getOrId());
+				} catch (SQLException e) {
+					logError(e,"数据库更改预约记录状态和车预约状态");
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 
 	

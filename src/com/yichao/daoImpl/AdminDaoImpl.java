@@ -441,6 +441,25 @@ public class AdminDaoImpl implements AdminDao,CarDao,LendRecordDao,OrderRecordDa
 		}
 		return false;
 	}
+	@Override
+	public void cancelOrder(int orId,int carId) throws SQLException {
+		mConnection.setAutoCommit(false);
+		String sql1 = "update orderrecordlist set orstatus = 0 where orid = ?";
+		mStatement = mConnection.prepareStatement(sql1);
+		mStatement.setInt(1, orId);
+		rNum = mStatement.executeUpdate();
+		if(rNum>0) {
+			String sql2 = "update carlist set carorderstatus = 1 where carid = ?";
+			mStatement = mConnection.prepareStatement(sql2);
+			mStatement.setInt(1, carId);
+			rNum = mStatement.executeUpdate();
+			if(rNum>0) {
+				mConnection.commit();
+			}else {
+				mConnection.rollback();
+			}
+		}
+	}
 
 	
 }

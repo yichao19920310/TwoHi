@@ -145,7 +145,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		}
 		
 		System.out.println("=================================================================================");
-		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约");
 		for (Car car : mCarList) {
 			
 			System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
@@ -303,7 +303,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		if(SEARCH_BRAND == searchType) {
 			logInfo("按品牌查车");
 			System.out.println("=================================================================================");
-			System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约");
+			System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约");
 			for (Car car : mCarList) {
 				if(car.getCarBrandId()==searchId) {
 					System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
@@ -315,7 +315,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 		}else if(SEARCH_TYPE == searchType) {
 			logInfo("按类型查车");
 			System.out.println("=================================================================================");
-			System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约");
+			System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约");
 			for (Car car : mCarList) {
 				if(car.getCarTypeId()==searchId) {
 					System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
@@ -353,7 +353,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 			
 		});
 		System.out.println("=================================================================================");
-		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约");
 		for (Car car : mCarList) {
 			System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
 					+car.getCarBrand()+"("+car.getCarBrandId()+")\t"+car.getCarType()+"("+car.getCarTypeId()
@@ -385,7 +385,7 @@ public class UserBizImpl implements UserBiz,CarBiz,LendRecordBiz,OrderRecordBiz 
 			e.printStackTrace();
 		}
 		System.out.println("=================================================================================");
-		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t价格\t是否可租\t是否可预约");
+		System.out.println("编号\t汽车名称\t备注\t品牌\t类型\t\t价格\t是否可租\t是否可预约");
 		for (Car car : carList) {
 			System.out.println(car.getCarId()+"\t"+car.getCarName()+"\t"+car.getCarRemark()+"\t"
 					+car.getCarBrand()+"("+car.getCarBrandId()+")\t"+car.getCarType()+"("+car.getCarTypeId()

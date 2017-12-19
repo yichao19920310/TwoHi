@@ -10,4 +10,5 @@ public interface AdminBiz extends Log4j{
 	public abstract boolean addCar(Car car);
 	public abstract boolean updateCarStatus(int carId, int carStatus);
 	public abstract boolean updateCarLendPrice(int carId, double carLendPrice);
+	public abstract void cancelOrder();
 }

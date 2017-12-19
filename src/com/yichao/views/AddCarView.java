@@ -149,7 +149,7 @@ public class AddCarView extends View {
 			carType = "舒适型";
 			break;
 		case 3:
-			carType = "SUV";
+			carType = "SUV型";
 			break;
 		case 4:
 			carType = "精英型";

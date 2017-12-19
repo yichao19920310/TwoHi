@@ -11,6 +11,7 @@ public interface AdminDao {
 	public abstract boolean insertCar(Car car) throws SQLException;
 	public abstract boolean updateLendPrice(int carId, double lendprice) throws SQLException;
 	public abstract boolean updateCarStatus(int carId, int carStatus) throws SQLException;
+	public abstract void cancelOrder(int orId, int carId) throws SQLException;
 	
 	
 	
