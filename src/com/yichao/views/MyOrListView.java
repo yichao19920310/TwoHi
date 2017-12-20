@@ -54,6 +54,7 @@ public class MyOrListView extends View {
 			}else {
 				System.out.println("操作失败,您未预约该车或超过预约时间!");
 			}
+			mView = new MyOrListView();
 			break;
 		default:
 			System.out.println("指令有误!");

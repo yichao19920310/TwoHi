@@ -35,7 +35,15 @@ public class MyLrListView extends View {
 			break;
 		case RETURN_CAR:
 			int carId = Integer.parseInt(command2);
-			ub.returnCar(carId);
+			
+			if(ub.returnCar(carId)) {
+				System.out.println("还车成功!信息如下:");
+				ub.logInfo("还车成功");
+				ub.showReturnCar(carId);
+			}else {
+				System.out.println("还车失败!");
+				ub.logInfo("还车失败");
+			}
 			mView = new MyLrListView();
 			break;
 		default:

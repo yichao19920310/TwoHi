@@ -222,20 +222,22 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 	@Override
 	public LendRecord lendCar(int carId, int lendDays) throws SQLException{
 	
+		//System.out.println("cid:"+carId+"day:"+lendDays);
 		LendRecord lr = null;
 		try {
 			mConnection.setAutoCommit(false);
 			mConnection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);  
 			String sql1 = "call lendcar(?,?,?,?)";
 			mCall = mConnection.prepareCall(sql1);
-			mCall.setInt(1, carId);
-			mCall.setInt(2, UserBizImpl.mUser.getUserId());
+			mCall.setInt(1, UserBizImpl.mUser.getUserId());
+			mCall.setInt(2, carId);
 			mCall.setInt(3, lendDays);
 			mCall.registerOutParameter(4, OracleTypes.NUMBER);
 			mCall.execute();
 			mConnection.commit();
 			int lrId = mCall.getInt(4);
-			//System.out.println(lrId);
+			
+			//System.out.println("ID:"+lrId);
 			if(lrId==0) {
 				return lr;
 			}
@@ -350,8 +352,8 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 			mConnection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);  
 			String sql1 = "call returncar(?,?,?,?)";
 			mCall = mConnection.prepareCall(sql1);
-			mCall.setInt(1, carId);
-			mCall.setInt(2, UserBizImpl.mUser.getUserId());
+			mCall.setInt(1, UserBizImpl.mUser.getUserId());
+			mCall.setInt(2, carId);			
 			mCall.setInt(3, lrId);
 			mCall.registerOutParameter(4, OracleTypes.NUMBER);
 			mCall.execute();
@@ -515,10 +517,11 @@ public class UserDaoImpl implements UserDao,CarDao,LendRecordDao,OrderRecordDao 
 			mConnection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);  
 			String sql1 = "call lendordercar(?,?,?,?,?)";
 			mCall = mConnection.prepareCall(sql1);
-			mCall.setInt(1, carId);
-			mCall.setInt(2, UserBizImpl.mUser.getUserId());
-			mCall.setInt(3, lendDays);
-			mCall.setInt(4, orId);
+			mCall.setInt(1, UserBizImpl.mUser.getUserId());
+			mCall.setInt(2, carId);			
+			mCall.setInt(3, orId);
+			mCall.setInt(4, lendDays);
+		
 			mCall.registerOutParameter(5, OracleTypes.NUMBER);
 			mCall.execute();
 			mConnection.commit();

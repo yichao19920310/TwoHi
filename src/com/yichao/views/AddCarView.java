@@ -45,6 +45,7 @@ public class AddCarView extends View {
 			case 1:
 				step1();
 				carBrandId = iT.getInt();
+				System.out.println();
 				if(carBrandId > 5 || carBrandId <= 0) {
 					step = 1;
 					System.out.println("无此编号!");
@@ -56,6 +57,7 @@ public class AddCarView extends View {
 			case 2:
 				step2();
 				carTypeId = iT.getInt();
+				System.out.println();
 				if(carTypeId > 4 || carTypeId <= 0) {
 					step = 2;
 					System.out.println("无此编号!");
@@ -161,7 +163,7 @@ public class AddCarView extends View {
 	}
 
 	private void step2() {
-		int carTypeId;
+		
 		System.out.println("-------------------------------------");
 		System.out.println("类型如下:");
 		System.out.println("类型编号\t类型名");
@@ -170,8 +172,7 @@ public class AddCarView extends View {
 		System.out.println("3\tSUV");
 		System.out.println("4\t精英型");
 		System.out.print("请选择类型编号:");
-		carTypeId = iT.getInt();
-		System.out.println();
+		
 	}
 
 	private String getCarBrand(int carBrandId) {
@@ -208,8 +209,8 @@ public class AddCarView extends View {
 		System.out.println("4\t奔驰");
 		System.out.println("5\t宝马");
 		System.out.print("请选择品牌编号:");
-		int carBrandId = iT.getInt();
-		System.out.println();
+		
+		
 	}
 
 }
